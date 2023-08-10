@@ -48,7 +48,7 @@ async function addWord() {
         v-for="item in state.words"
         :key="item"
       >
-        {{ item }} <button bg-red text-white v-if="state.isAdmin" @click="socket.emit('removeWord', item)">
+        {{ item }} <button bg-red text-white v-if="state.isAdmin" @click="socket.emitWithAck('removeWord', item)">
           {{ t('Remove') }}
         </button>
       </li>

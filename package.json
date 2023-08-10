@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "build": "pnpm --filter client run build",
+    "start": "pnpm --filter server run start"
+  }
+}

@@ -162,4 +162,7 @@ export default defineConfig({
     // TODO: workaround until they support native ESM
     noExternal: ['workbox-window', /vue-i18n/],
   },
+  build: {
+    outDir: '../static',
+  },
 })

@@ -14,7 +14,9 @@ export const state = reactive<{
   words: [],
 })
 
-export const socket = io('http://192.168.178.24:3000/', {
+const URL = import.meta.env.DEV ? 'http://localhost:3000' : import.meta.env.BASE_URL as string
+
+export const socket = io(URL, {
   autoConnect: false,
 })
 

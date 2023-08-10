@@ -26,6 +26,9 @@ app.get("/", (req, res) => {
   res.sendFile(`${staticDir}/index.html`);
 });
 
+// all routes that are not found should be served from static dir or redirect to index.html
+app.use(express.static(staticDir));
+
 io.on("connection", (socket) => {
   if (socket.handshake.auth.pin === adminPin.toString()) {
     console.log("Admin connected");
