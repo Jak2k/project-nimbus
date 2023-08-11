@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { activateModule } from '~/socket';
+
 
 const {downloadLink}=defineProps<{
   connected: boolean
@@ -29,7 +31,7 @@ function download() {
   <div m-3 p-3 rounded-full bg-gray-100 dark:bg-gray-900 flex flex-row flex-justify-between flex-items-baseline>
     <span v-if="connected">{{ t('connected') }}</span>
     <span v-else>{{ t('disconnected') }}</span>
-    <h1 text-xl>Project Nimbus</h1>
+    <span flex flex-row><button btn bg-red @click="activateModule('waiting')">{{ t('deactivateModule') }}</button><h1 text-xl>Project Nimbus</h1></span>
     <span><span m-1 p-1 font-900 text-xl font-mono>{{ t('PIN') }}: {{ serverPin }}</span><button btn bg-green @click="download">Download</button></span>
     
   </div>

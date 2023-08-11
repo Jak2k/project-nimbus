@@ -8,3 +8,10 @@ Submit Pin: PIN Bestätigen
 Remove: Entfernen
 Users: Benutzer
 PIN: PIN
+module:
+  wordcloud:
+    name: Wörterwolke
+  waiting:
+    adminMessage: Wählen sie unten ein Modul aus
+    message: Bitte warte, bis ein Admin ein Modul startet
+deactivateModule: Modul verlassen
