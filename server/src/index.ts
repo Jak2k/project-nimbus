@@ -18,7 +18,7 @@ console.log(`Session pin: ${sessionPin}`);
 const adminPin = Math.floor(100000 + Math.random() * 900000).toString();
 console.log(`Admin pin: ${adminPin}`);
 
-const staticDir = path.resolve("../static");
+const staticDir = path.resolve("../client/dist");
 
 let words = ["foo", "bar", "baz"];
 
