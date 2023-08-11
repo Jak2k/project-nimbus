@@ -7,11 +7,12 @@ defineOptions({
 
 const word = ref('')
 const pin = ref('')
+const name = ref('')
 
 const { t } = useI18n()
 
 async function submitPin() {
-  socket.auth = { pin: pin.value }
+  socket.auth = { pin: pin.value, name: name.value }
   socket.connect()
   const resp = await socket.emitWithAck('join')
   if (resp === 'user') {
@@ -41,48 +42,58 @@ async function addWord() {
 
 <template>
   <div v-if="state.started">
-    <h1>{{ t('Welcome') }}</h1>
+    <h1 text-3xl>{{ t('Welcome') }}</h1>
+    <h2 text-2xl>{{ t('Users') }}</h2>
+    <ul>
+      <li
+        v-for="item in state.users"
+        :key="item"
+      >
+        {{ item }}
+      </li>
+    </ul>
     <p>{{ state.connected ? t("connected") : t("disconnected") }}</p>
     <ul>
       <li
         v-for="item in state.words"
         :key="item"
       >
-        {{ item }} <button bg-red text-white v-if="state.isAdmin" @click="socket.emitWithAck('removeWord', item)">
+        {{ item }} <button bg-red btn v-if="state.isAdmin" @click="socket.emitWithAck('removeWord', item)">
           {{ t('Remove') }}
         </button>
       </li>
     </ul>
-    <button
-      @click="connect()"
-    >
-      {{ t('Connect') }}
-    </button>
-    <button
-      @click="disconnect()"
-    >
-      {{ t('Disconnect') }}
-    </button>
     <input
       v-model="word"
       type="text"
+      inp
     >
     <button
       @click="addWord()"
+      bg-green
+      btn
     >
       {{ t('Add word') }}
     </button>
   </div>
   <div v-else>
-    <h1>{{ t('Welcome') }}</h1>
+    <h1 text-3xl>{{ t('Welcome') }}</h1>
     <input
       v-model="pin"
+      type="password"
+      inp
+    >
+    <input
+      v-model="name"
       type="text"
+      inp
     >
     <button
       @click="submitPin()"
+      btn
+      bg-green
     >
-      {{ t('Submit Pin') }}
+      {{ t('Connect') }}
     </button>
   </div>
 </template>

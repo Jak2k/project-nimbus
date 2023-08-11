@@ -21,6 +21,7 @@ console.log(`Admin pin: ${adminPin}`);
 const staticDir = path.resolve("../client/dist");
 
 let words = ["foo", "bar", "baz"];
+let users = [];
 
 app.get("/", (req, res) => {
   res.sendFile(`${staticDir}/index.html`);
@@ -53,7 +54,10 @@ io.on("connection", (socket) => {
   });
   socket.on("join", (callback: (resp: string) => void) => {
     socket.emit("updateWords", words);
+    // @ts-ignore
+    users.push(socket.handshake.auth.name || "Anonymous");
     callback(socket.handshake.auth.pin.toString().length === 6 ? "admin" : "user");
+    io.emit("updateUsers", users);
   });
 });
 
