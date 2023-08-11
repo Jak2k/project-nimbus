@@ -8,21 +8,23 @@ defineOptions({
 const word = ref('')
 const pin = ref('')
 const name = ref('')
+const serverPin = ref('')
 
 const { t } = useI18n()
 
 async function submitPin() {
   socket.auth = { pin: pin.value, name: name.value }
   socket.connect()
-  const resp = await socket.emitWithAck('join')
-  if (resp === 'user') {
+  const {sessionPin, userType} = await socket.emitWithAck('join')
+  if (userType === 'user') {
     state.started = true
   }
-  else if (resp === 'admin') {
+  else if (userType=== 'admin') {
     state.started = true
     state.isAdmin = true
   }
   else { state.started = false }
+  serverPin.value = sessionPin
 }
 
 async function addWord() {
@@ -34,7 +36,7 @@ async function addWord() {
 
 <template>
   <div v-if="state.started">
-    <HeaderBar :connected="state.connected" :downloadLink="URL" />
+    <HeaderBar :connected="state.connected" :downloadLink="URL" :serverPin="serverPin" />
     <h1 text-3xl>{{ t('Welcome') }}</h1>
     <h2 text-2xl>{{ t('Users') }}</h2>
     <ul>

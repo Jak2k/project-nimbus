@@ -3,6 +3,7 @@
 const {downloadLink}=defineProps<{
   connected: boolean
   downloadLink: string
+  serverPin: string
 }>()
 
 const { t } = useI18n()
@@ -29,6 +30,7 @@ function download() {
     <span v-if="connected">{{ t('connected') }}</span>
     <span v-else>{{ t('disconnected') }}</span>
     <h1 text-xl>Project Nimbus</h1>
-    <button btn bg-green @click="download">Download</button>
+    <span><span m-1 p-1 font-900 text-xl font-mono>{{ t('PIN') }}: {{ serverPin }}</span><button btn bg-green @click="download">Download</button></span>
+    
   </div>
 </template>

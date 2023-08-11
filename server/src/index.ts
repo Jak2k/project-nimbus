@@ -56,11 +56,14 @@ io.on("connection", (socket) => {
 
     callback("ok");
   });
-  socket.on("join", (callback: (resp: string) => void) => {
+  socket.on("join", (callback: (resp: {
+    userType: string;
+    sessionPin: string;
+  }) => void) => {
     socket.emit("updateWords", words);
     // @ts-ignore
     users.push(socket.handshake.auth.name || "Anonymous");
-    callback(socket.handshake.auth.pin.toString().length === 6 ? "admin" : "user");
+    callback({userType: socket.handshake.auth.pin.toString().length === 6 ? "admin" : "user", sessionPin});
     io.emit("updateUsers", users);
   });
 });
