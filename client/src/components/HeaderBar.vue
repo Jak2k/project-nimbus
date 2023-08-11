@@ -11,7 +11,7 @@ const { downloadLink } = defineProps<{
 
 const { t } = useI18n();
 
-const locale = ref("en");
+const locale = useLocalStorage("locale", "en");
 
 function download() {
   // download downloadLink+`/download`

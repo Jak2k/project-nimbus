@@ -6,7 +6,7 @@ defineOptions({
 });
 
 const pin = ref("");
-const name = ref("");
+const name = useLocalStorage("name", "");
 const serverPin = ref("");
 
 const { t } = useI18n();
