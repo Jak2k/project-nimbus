@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { socket, state } from '../socket'
+import { socket, state, URL } from '../socket'
 
 defineOptions({
   name: 'IndexPage',
@@ -25,14 +25,6 @@ async function submitPin() {
   else { state.started = false }
 }
 
-function connect() {
-  socket.connect()
-}
-
-function disconnect() {
-  socket.disconnect()
-}
-
 async function addWord() {
   const resp = await socket.emitWithAck('addWord', word.value)
   if (resp === 'ok')
@@ -42,6 +34,7 @@ async function addWord() {
 
 <template>
   <div v-if="state.started">
+    <HeaderBar :connected="state.connected" :downloadLink="URL" />
     <h1 text-3xl>{{ t('Welcome') }}</h1>
     <h2 text-2xl>{{ t('Users') }}</h2>
     <ul>
@@ -52,7 +45,7 @@ async function addWord() {
         {{ item }}
       </li>
     </ul>
-    <p>{{ state.connected ? t("connected") : t("disconnected") }}</p>
+    <h2 text-2xl>Words</h2>
     <ul>
       <li
         v-for="item in state.words"

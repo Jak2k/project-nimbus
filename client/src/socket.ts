@@ -16,7 +16,7 @@ export const state = reactive<{
   users: [],
 })
 
-const URL = import.meta.env.DEV ? 'http://localhost:3000' : import.meta.env.BASE_URL as string
+export const URL = import.meta.env.DEV ? 'http://localhost:3000' : import.meta.env.BASE_URL as string
 
 export const socket = io(URL, {
   autoConnect: false,

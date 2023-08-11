@@ -27,6 +27,10 @@ app.get("/", (req, res) => {
   res.sendFile(`${staticDir}/index.html`);
 });
 
+app.get("/download", (req, res) => {
+  res.end(words.join("\n"));
+});
+
 // all routes that are not found should be served from static dir or redirect to index.html
 app.use(express.static(staticDir));
 
