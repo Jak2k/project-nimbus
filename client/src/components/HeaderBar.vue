@@ -7,6 +7,7 @@ const { downloadLink } = defineProps<{
   downloadLink: string;
   serverPin: string;
   isAdmin: boolean;
+  users: string[];
 }>();
 
 const { t } = useI18n();
@@ -51,6 +52,7 @@ function download() {
         {{ t("deactivateModule") }}
       </button>
       <h1 text-xl>Project Nimbus</h1>
+      <span m-1>{{ users[users.length -1] }}({{ users.length }})</span>
     </span>
     <span><span m-1 p-1 font-900 text-xl font-mono>{{ t("PIN") }}: {{ serverPin }}</span><button btn bg-green
         @click="download">Download</button></span>

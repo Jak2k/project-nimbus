@@ -34,6 +34,7 @@ async function submitPin() {
       :downloadLink="URL"
       :serverPin="serverPin"
       :isAdmin="state.isAdmin"
+      :users="state.users"
       w-full
     />
     <h1 text-3xl>{{ t("Welcome") }}</h1>
