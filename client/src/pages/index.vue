@@ -38,9 +38,10 @@ async function submitPin() {
     />
     <h1 text-3xl>{{ t("Welcome") }}</h1>
     <h2 text-2xl>{{ t("Users") }}</h2>
-    <ul>
-      <li v-for="item in state.users" :key="item">
-        {{ item }}
+    <ul v-if="state.module==='waiting'" flex flex-row flex-wrap gap-1 m-5>
+      <li v-for="item in state.users" :key="item" w-30 h-30 bg-green rounded-full flex flex-align-center flex-items-center>
+        <span w-full text-center text-black>{{ item }}</span>
+        
       </li>
     </ul>
 
