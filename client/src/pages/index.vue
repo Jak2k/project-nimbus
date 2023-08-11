@@ -28,12 +28,13 @@ async function submitPin() {
 </script>
 
 <template>
-  <div v-if="state.started">
+  <div v-if="state.started" flex flex-col flex-items-center m-1 p-1>
     <HeaderBar
       :connected="state.connected"
       :downloadLink="URL"
       :serverPin="serverPin"
       :isAdmin="state.isAdmin"
+      w-full
     />
     <h1 text-3xl>{{ t("Welcome") }}</h1>
     <h2 text-2xl>{{ t("Users") }}</h2>
@@ -68,7 +69,7 @@ async function submitPin() {
       :removeWord="removeWord"
     />
   </div>
-  <div v-else>
+  <div v-else flex flex-col flex-items-center flex-align-center m-t-10>
     <h1 text-3xl>{{ t("Welcome") }}</h1>
     <input v-model="pin" type="password" inp />
     <input v-model="name" type="text" inp />
