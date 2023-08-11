@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { socket, state, URL, addWord, removeWord, activateModule } from "../socket";
+import QrCOde from "qrcode.vue"
 
 defineOptions({
   name: "IndexPage",
@@ -46,7 +47,7 @@ async function submitPin() {
       </li>
     </ul>
 
-    <div v-if="state.module === 'waiting'">
+    <div v-if="state.module === 'waiting'" flex-col w-full flex flex-items-center>
       <h2 text-2xl>
         {{
           state.isAdmin
@@ -62,6 +63,8 @@ async function submitPin() {
       >
         {{ t("module.wordcloud.name") }}
       </button>
+      <QrCOde :value="URL" :size="200" render-as="svg" margin="1" w-50 h-50 m-3 />
+      
     </div>
     <WordCloudModule
       v-if="state.module === 'wordcloud'"
