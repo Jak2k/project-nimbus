@@ -9,7 +9,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /app/
 RUN pnpm install --frozen-lockfile
 
 COPY . .
-RUN ln /app/static /app/client/dist
 RUN pnpm build
 
 FROM node:18-alpine as production-stage
