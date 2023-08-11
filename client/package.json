@@ -44,7 +44,7 @@
     "https-localhost": "^4.7.1",
     "markdown-it-link-attributes": "^4.0.1",
     "markdown-it-shiki": "^0.9.0",
-    "pnpm": "^8.6.12",
+    "pnpm": "^8.6.8",
     "shiki": "^0.14.3",
     "simple-git-hooks": "^2.9.0",
     "socket.io-client": "^4.7.2",
