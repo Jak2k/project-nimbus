@@ -33,6 +33,7 @@ async function submitPin() {
       :connected="state.connected"
       :downloadLink="URL"
       :serverPin="serverPin"
+      :isAdmin="state.isAdmin"
     />
     <h1 text-3xl>{{ t("Welcome") }}</h1>
     <h2 text-2xl>{{ t("Users") }}</h2>
