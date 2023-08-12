@@ -28,10 +28,6 @@ Tutorial will be enhanced later...
 
 #### Install
 
-`curl "https://raw.githubusercontent.com/Jak2k/Project-Nimbus/main/scripts/install_termux.sh" | sh -s`
-
--- OR --
-
 1. Run `pkg i nodejs git`
 2. Clone the repo
 3. run `npm i -g pnpm`
