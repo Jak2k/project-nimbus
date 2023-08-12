@@ -1,8 +1,11 @@
-# project-nimbus 
-## ***ALPHA STATUS! NOT PRODUCTION READY!***
+# project-nimbus
+
+## **_BETA STATUS! DON'T RELY ON IT IN PRODUCTION!_**
+
 Real-Time Collaboration Tool for Classrooms
 
 ## Features
+
 - [x] Real-Time Collaboration
 - [ ] Moderation
   - [x] Removing unwanted content
@@ -24,6 +27,11 @@ Real-Time Collaboration Tool for Classrooms
 Tutorial will be enhanced later...
 
 #### Install
+
+`wget "https://github.com/Jak2k/project-nimbus/blob/main/scripts/install_termux.sh" && bash install_termux.sh`
+
+-- OR --
+
 1. Run `pkg i nodejs git`
 2. Clone the repo
 3. run `npm i -g pnpm`
