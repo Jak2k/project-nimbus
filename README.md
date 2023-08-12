@@ -17,6 +17,8 @@ Real-Time Collaboration Tool for Classrooms
 
 ## Getting Started
 
+> **Only run this in local networks! Never run this open to the internet.**
+
 ### Termux on android
 
 Tutorial will be enhanced later...
