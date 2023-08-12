@@ -9,7 +9,7 @@ fi
 
 # Install dependencies
 
-apt-get i -y git nodejs-lts
+apt-get install -y git nodejs-lts
 echo "✅ Installed dependencies"
 
 # Clone repo
