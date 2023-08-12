@@ -28,7 +28,7 @@ Tutorial will be enhanced later...
 
 #### Install
 
-`wget "https://github.com/Jak2k/project-nimbus/blob/main/scripts/install_termux.sh" && bash install_termux.sh`
+`curl "https://raw.githubusercontent.com/Jak2k/Project-Nimbus/main/scripts/install_termux.sh" | sh -s`
 
 -- OR --
 
