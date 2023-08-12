@@ -20,7 +20,7 @@ export const state = reactive<{
   moduleData: {},
 })
 
-export const URL = import.meta.env.DEV ? 'http://localhost:3000' : import.meta.env.BASE_URL as string
+export const URL = import.meta.env.DEV ? 'http://localhost:3000' : `${window.location.protocol}//${window.location.host}`
 
 export const socket = io(URL, {
   autoConnect: false,

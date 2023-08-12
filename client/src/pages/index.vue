@@ -63,7 +63,7 @@ async function submitPin() {
       >
         {{ t("module.wordcloud.name") }}
       </button>
-      <QrCOde :value="URL" :size="200" render-as="svg" margin="1" w-50 h-50 m-3 />
+      <QrCOde :value="URL" :size="200" render-as="svg" :margin="1" w-50 h-50 m-3 />
       
     </div>
     <WordCloudModule
