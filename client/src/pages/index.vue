@@ -1,88 +1,85 @@
 <script setup lang="ts">
-import { socket, state } from '../socket'
+import { socket, state, URL, addWord, removeWord, activateModule } from "../socket";
+import QrCOde from "qrcode.vue"
 
 defineOptions({
-  name: 'IndexPage',
-})
+  name: "IndexPage",
+});
 
-const word = ref('')
-const pin = ref('')
+const pin = ref("");
+const name = useLocalStorage("name", "");
+const serverPin = ref("");
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 async function submitPin() {
-  socket.auth = { pin: pin.value }
-  socket.connect()
-  const resp = await socket.emitWithAck('join')
-  if (resp === 'user') {
-    state.started = true
+  socket.auth = { pin: pin.value, name: name.value };
+  socket.connect();
+  const { sessionPin, userType } = await socket.emitWithAck("join");
+  if (userType === "user") {
+    state.started = true;
+  } else if (userType === "admin") {
+    state.started = true;
+    state.isAdmin = true;
+  } else {
+    state.started = false;
   }
-  else if (resp === 'admin') {
-    state.started = true
-    state.isAdmin = true
-  }
-  else { state.started = false }
-}
-
-function connect() {
-  socket.connect()
-}
-
-function disconnect() {
-  socket.disconnect()
-}
-
-async function addWord() {
-  const resp = await socket.emitWithAck('addWord', word.value)
-  if (resp === 'ok')
-    word.value = ''
+  serverPin.value = sessionPin;
 }
 </script>
 
 <template>
-  <div v-if="state.started">
-    <h1>{{ t('Welcome') }}</h1>
-    <p>{{ state.connected ? t("connected") : t("disconnected") }}</p>
-    <ul>
-      <li
-        v-for="item in state.words"
-        :key="item"
-      >
-        {{ item }} <button bg-red text-white v-if="state.isAdmin" @click="socket.emitWithAck('removeWord', item)">
-          {{ t('Remove') }}
-        </button>
+  <div v-if="state.started" flex flex-col flex-items-center m-1 p-1>
+    <HeaderBar
+      :connected="state.connected"
+      :downloadLink="URL"
+      :serverPin="serverPin"
+      :isAdmin="state.isAdmin"
+      :users="state.users"
+      w-full
+    />
+    <h1 text-3xl>{{ t("Welcome") }}</h1>
+    <h2 text-2xl>{{ t("Users") }}</h2>
+    <ul v-if="state.module==='waiting'" flex flex-row flex-wrap gap-1 m-5>
+      <li v-for="item in state.users" :key="item" w-30 h-30 bg-green rounded-full flex flex-align-center flex-items-center>
+        <span w-full text-center text-black>{{ item }}</span>
+        
       </li>
     </ul>
-    <button
-      @click="connect()"
-    >
-      {{ t('Connect') }}
-    </button>
-    <button
-      @click="disconnect()"
-    >
-      {{ t('Disconnect') }}
-    </button>
-    <input
-      v-model="word"
-      type="text"
-    >
-    <button
-      @click="addWord()"
-    >
-      {{ t('Add word') }}
-    </button>
+
+    <div v-if="state.module === 'waiting'" flex-col w-full flex flex-items-center>
+      <h2 text-2xl>
+        {{
+          state.isAdmin
+            ? t("module.waiting.adminMessage")
+            : t("module.waiting.message")
+        }}
+      </h2>
+      <button
+        v-if="state.isAdmin"
+        @click="activateModule('wordcloud')"
+        bg-green
+        btn
+      >
+        {{ t("module.wordcloud.name") }}
+      </button>
+      <QrCOde :value="URL" :size="200" render-as="svg" margin="1" w-50 h-50 m-3 />
+      
+    </div>
+    <WordCloudModule
+      v-if="state.module === 'wordcloud'"
+      :words="state.moduleData.words || []"
+      :isAdmin="state.isAdmin"
+      :addWord="addWord"
+      :removeWord="removeWord"
+    />
   </div>
-  <div v-else>
-    <h1>{{ t('Welcome') }}</h1>
-    <input
-      v-model="pin"
-      type="text"
-    >
-    <button
-      @click="submitPin()"
-    >
-      {{ t('Submit Pin') }}
+  <div v-else flex flex-col flex-items-center flex-align-center m-t-10>
+    <h1 text-3xl>{{ t("Welcome") }}</h1>
+    <input v-model="pin" type="password" inp />
+    <input v-model="name" type="text" inp />
+    <button @click="submitPin()" btn bg-green>
+      {{ t("Connect") }}
     </button>
   </div>
 </template>

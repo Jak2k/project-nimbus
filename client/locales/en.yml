@@ -6,3 +6,12 @@ disconnected: Disconnected
 Add word: Add Word
 Submit Pin: Submit PIN
 Remove: Remove
+Users: Users
+PIN: PIN
+module:
+  wordcloud:
+    name: Wordcloud
+  waiting:
+    adminMessage: Select a module below
+    message: Please wait for an admin to start a module
+deactivateModule: Leave Module

@@ -4,17 +4,23 @@ export const state = reactive<{
   pin: string
   started: boolean
   connected: boolean
-  words: string[]
   isAdmin: boolean
+  users: string[]
+
+  module: string
+  moduleData: any
 }>({
   pin: '',
   started: false,
   connected: false,
   isAdmin: false,
-  words: [],
+  users: [],
+
+  module: 'waiting',
+  moduleData: {},
 })
 
-const URL = import.meta.env.DEV ? 'http://localhost:3000' : import.meta.env.BASE_URL as string
+export const URL = import.meta.env.DEV ? 'http://localhost:3000' : import.meta.env.BASE_URL as string
 
 export const socket = io(URL, {
   autoConnect: false,
@@ -29,5 +35,31 @@ socket.on('disconnect', () => {
 })
 
 socket.on('updateWords', (words: string[]) => {
-  state.words = words
+  state.moduleData.words = words
 })
+
+socket.on('updateUsers', (users: string[]) => {
+  state.users = users
+})
+
+socket.on('updateModule', (module: string) => {
+  state.module = module
+})
+
+export function addWord(word: string) {
+  if (state.module !== 'wordcloud')
+    return
+
+  socket.emit('addWord', word)
+}
+
+export function removeWord(word: string) {
+  if (state.module !== 'wordcloud' || !state.isAdmin)
+    return
+
+  socket.emit('removeWord', word)
+}
+
+export function activateModule(module: string) {
+  socket.emit('activateModule', module)
+}
