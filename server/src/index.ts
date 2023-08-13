@@ -118,5 +118,5 @@ server.listen(3000, () => {
       ip = iface.address;
     });
   });
-  console.log(`Open https://${ip}:3000/ to login`);
+  console.log(`Open http://${ip}:3000/ to login`);
 });
