@@ -42,15 +42,15 @@ const handleAction: actionHandler = (
         });
       }
       broadcast("updateWords", getWords());
-      break;
+      return true;
     case "removeWord":
-      if (!user.isAdmin) return;
+      if (!user.isAdmin) return false;
       const i = words.findIndex((w) => w.word === data[0]);
       words[i].removed = true;
       broadcast("updateWords", getWords());
-      break;
+      return true;
     default:
-      break;
+      return false;
   }
 };
 

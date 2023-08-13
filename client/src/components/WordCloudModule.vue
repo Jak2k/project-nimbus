@@ -4,7 +4,7 @@ import Vue3WordCloud from "vue3-word-cloud";
 defineProps<{
   words: { word: string, count: number }[];
   isAdmin: boolean;
-  addWord: (word: string) => void;
+  addWord: (word: string, onSucces: () => void) => void;
   removeWord: (word: string) => void;
 }>();
 
@@ -27,7 +27,7 @@ const { t } = useI18n();
       </span>
     </div>
     <input v-model="word" type="text" inp />
-    <button @click="addWord(word)" bg-green btn>
+    <button @click="addWord(word, () => word = '')" bg-green btn>
       {{ t("module.wordcloud.addWord") }}
     </button>
     <Vue3WordCloud :style="`height: ${height * 2 / 3}px; width: ${width * 9 / 10}px; overflow: hidden;`"
@@ -38,7 +38,7 @@ const { t } = useI18n();
         <div :title="wrd.weight" :style="`z-index: -2;font: ${wrd.font}; font-family: 'DM Sans' ,
           ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI' , Roboto, 'Helvetica Neue' ,
           Arial, 'Noto Sans' , sans-serif, 'Apple Color Emoji' , 'Segoe UI Emoji' , 'Segoe UI Symbol'
-          , 'Noto Color Emoji'`" @click="addWord(wrd.text)">
+          , 'Noto Color Emoji'`" @click="addWord(wrd.text, () => { })">
           {{ wrd.text }}
         </div>
       </template>

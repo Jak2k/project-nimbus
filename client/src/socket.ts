@@ -48,11 +48,16 @@ socket.on('updateModule', (module: string) => {
   state.module = module
 })
 
-export function addWord(word: string) {
+export function addWord(word: string, onSuccess: () => void) {
   if (state.module !== 'wordcloud')
     return
 
   socket.emit('addWord', word)
+
+  socket.on('actionSuccess', () => {
+    onSuccess()
+    socket.off('actionSuccess')
+  })
 }
 
 export function removeWord(word: string) {

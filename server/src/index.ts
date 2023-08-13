@@ -2,7 +2,7 @@ import express from "express";
 const app = express();
 import http from "http";
 const server = http.createServer(app);
-import { Server, Socket } from "socket.io";
+import { Event, Server, Socket } from "socket.io";
 import os from "os";
 const io = new Server(server, {
   cors: {
@@ -24,7 +24,7 @@ const staticDir = path.resolve("../client/dist");
 
 let users = [];
 
-export type actionHandler = (action: string, data: any, user: { isAdmin: boolean, name: string }, broadcast: (event: string, data: any) => void) => void
+export type actionHandler = (action: string, data: any, user: { isAdmin: boolean, name: string }, broadcast: (event: string, data: any) => void) => true | false | void
 export type joinHandler = (socket: Socket) => void
 export type module = {
   handleAction: actionHandler,
@@ -34,7 +34,7 @@ export type module = {
   handleDownload: (req: any, res: any) => void
 }
 
-const waitingHandler: actionHandler = (action: string, data: any, user: { isAdmin: boolean, name: string }, broadcast: (event: string, data: any) => void) => {}
+const waitingHandler: actionHandler = (action: string, data: any, user: { isAdmin: boolean, name: string }, broadcast: (event: string, data: any) => void) => false
 const knownModules: Map<string, module> = new Map();
 knownModules.set("waiting", {
   handleAction: waitingHandler,
@@ -102,8 +102,12 @@ io.on("connection", (socket) => {
   
 
   socket.onAny((event, ...args) => {
-    activeModule.handleAction(event, args, {isAdmin: socket.handshake.auth.pin === adminPin, name: socket.handshake.auth.name || "Anonymous"}, broadcast);
+    const succes = activeModule.handleAction(event, args, {isAdmin: socket.handshake.auth.pin === adminPin, name: socket.handshake.auth.name || "Anonymous"}, broadcast);
+    if(succes) {
+      socket.emit("actionSuccess", event);
+    }
   });
+
 });
 
 server.listen(3000, () => {
