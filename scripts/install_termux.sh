@@ -7,6 +7,10 @@ echo "❌ Not running in termux, exiting"
 exit 1
 fi
 
+# Update and upgrade packages
+
+apt-get update && apt-get upgrade -y
+
 # Install dependencies
 
 apt-get install -y git nodejs-lts
