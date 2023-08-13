@@ -3,6 +3,7 @@ const app = express();
 import http from "http";
 const server = http.createServer(app);
 import { Server, Socket } from "socket.io";
+import os from "os";
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -106,5 +107,16 @@ io.on("connection", (socket) => {
 });
 
 server.listen(3000, () => {
-  console.log("listening on *:3000");
+  // get current ip address in local network
+  const ifaces = os.networkInterfaces();
+  let ip = "";
+  Object.keys(ifaces).forEach((ifname) => {
+    ifaces[ifname]?.forEach((iface) => {
+      if ("IPv4" !== iface.family || iface.internal !== false) {
+        return;
+      }
+      ip = iface.address;
+    });
+  });
+  console.log(`Open https://${ip}:3000/ to login`);
 });
