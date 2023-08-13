@@ -4,29 +4,6 @@ import { actionHandler, joinHandler } from ".";
 
 let words = ["foo", "bar", "baz"];
 
-// export default function register(room: BroadcastOperator<DefaultEventsMap, any>, socket: Socket, app: any, pins: { admin: string; session: string }) {
-//   app.get("/download", (req, res) => {
-//
-//   });
-//     // room.on(
-//     //   "removeWord",
-//     //   (word: string, callback: (resp: string) => void) => {
-//     //     words = words.filter((w) => w !== word);
-//     //     room.emit("updateWords", words);
-//     //     callback("ok");
-//     //   }
-//     // );
-
-//   socket.on("addWord", (word: string, callback: (resp: string) => void) => {
-//     words.push(word);
-//     room.emit("updateWords", words);
-//     console.log(`Added word: ${word}`);
-
-//     callback("ok");
-//   });
-//   room.emit("updateWords", words);
-// }
-
 const handleAction: actionHandler = (
   action: string,
   data: any,
