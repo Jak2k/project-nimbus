@@ -1,17 +1,21 @@
 Welcome: Welcome to Project Nimbus
 Connect: Connect
-Disconnect: Disconnect
 connected: Connected
 disconnected: Disconnected
-Add word: Add Word
-Submit Pin: Submit PIN
-Remove: Remove
 Users: Users
 PIN: PIN
 module:
   wordcloud:
     name: Wordcloud
+    clickToRemove: >-
+      Click on a word below to remove. Recover by submiting in input below.
+      Click on a word in the cloud to submit it yourself.
+    addWord: Add Word
+    clickToSubmit: Click on a word in the cloud to submit it yourself.
   waiting:
     adminMessage: Select a module below
     message: Please wait for an admin to start a module
 deactivateModule: Leave Module
+button:
+  back: Back
+not-found: Not Found

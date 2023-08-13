@@ -1,17 +1,22 @@
 Connect: Verbinden
-Disconnect: Verbindung trennen
 Welcome: Willkommen zu Project Nimbus
 connected: Verbunden
 disconnected: Nicht Verbunden
-Add word: Wort hinzufügen
-Submit Pin: PIN Bestätigen
-Remove: Entfernen
 Users: Benutzer
 PIN: PIN
 module:
   wordcloud:
     name: Wörterwolke
+    clickToRemove: >-
+      Um ein Wort zu entfernen, klicken sie unten auf dieses. Um es
+      wiederherzustellen, geben sie es unten in das Textfeld ein. Klicken sie
+      auf ein Wort in der Wolke um es selbst abzusenden.
+    addWord: Wort hinzufügen
+    clickToSubmit: Klicke auf ein Wort in der Wolke, um es selbst abzusenden.
   waiting:
     adminMessage: Wählen sie unten ein Modul aus
     message: Bitte warte, bis ein Admin ein Modul startet
 deactivateModule: Modul verlassen
+button:
+  back: Zurück
+not-found: Nicht gefunden

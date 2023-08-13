@@ -55,7 +55,7 @@ const handleAction: actionHandler = (
 };
 
 const handleJoin: joinHandler = (socket: Socket) => {
-  socket.emit("updateWords", words);
+  socket.emit("updateWords", getWords());
 };
 
 const init = (broadcast: (event: string, data: any) => void) => {
