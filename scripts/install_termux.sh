@@ -9,7 +9,7 @@ fi
 
 # Update and upgrade packages
 
-apt-get update && apt-get upgrade -y
+apt-get update && apt-get -o Dpkg::Options::="--force-confnew" -o Dpkg::Options::="--force-connew" upgrade
 
 # Install dependencies
 
@@ -48,5 +48,4 @@ echo "✅ Built project"
 echo ""
 echo ""
 echo "✅ Successfully installed Project Nimbus"
-echo "▶️ To start the server run 'pnpm start'"
-echo "After starting the server, you can access the web interface at $(hostname -I | awk '{print $1}'):3000"
+echo "▶️ To start the server run 'cd project-nimbus && pnpm start'"
