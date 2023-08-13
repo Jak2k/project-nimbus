@@ -29,7 +29,8 @@ Tutorial will be enhanced later...
 #### Install
 
 1. Install Termux
-2. In termux, run ```bash
+2. In termux, run
+   ```bash
    curl -s "https://raw.githubusercontent.com/Jak2k/Project-Nimbus/main/scripts/install_termux.sh" | sh -s
 
 ```
