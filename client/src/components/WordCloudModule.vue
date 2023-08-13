@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  words: string[];
+  words: { word: string, count: number }[];
   isAdmin: boolean;
   addWord: (word: string) => void;
   removeWord: (word: string) => void;
@@ -15,9 +15,9 @@ const { t } = useI18n();
   <div>
     <h2 text-2xl>Words</h2>
     <ul>
-      <li v-for="item in words" :key="item">
-        {{ item }}
-        <button bg-red btn v-if="isAdmin" @click="removeWord(item)">
+      <li v-for="item in words" :key="item.word">
+        {{ item.word || "" }} ({{ item.count || 0 }})
+        <button bg-red btn v-if="isAdmin" @click="removeWord(item.word || '')">
           {{ t("Remove") }}
         </button>
       </li>
