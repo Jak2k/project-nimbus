@@ -9,7 +9,7 @@ fi
 
 # Update and upgrade packages
 
-apt-get update -o Dpkg::Options::="--force-confnew" -o Dpkg::Options::="--force-connew" --yes --force-yes && apt-get -o Dpkg::Options::="--force-confnew" -o Dpkg::Options::="--force-connew" --yes --force-yes upgrade
+apt-get update -o Dpkg::Options::="--force-confnew" -o Dpkg::Options::="--force-confnew" --yes --allow && apt-get -o Dpkg::Options::="--force-confnew" -o Dpkg::Options::="--force-confnew" --yes --allow upgrade
 
 # Install dependencies
 
