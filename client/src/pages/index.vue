@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { socket, state, URL, addWord, removeWord, activateModule } from "../socket";
-import QrCOde from "qrcode.vue"
 
 defineOptions({
   name: "IndexPage",
@@ -30,50 +29,37 @@ async function submitPin() {
 
 <template>
   <div v-if="state.started" flex flex-col flex-items-center m-1 p-1>
-    <HeaderBar
-      :connected="state.connected"
-      :downloadLink="URL"
-      :serverPin="serverPin"
-      :isAdmin="state.isAdmin"
-      :users="state.users"
-      w-full
-    />
+    <HeaderBar :connected="state.connected" :downloadLink="URL" :serverPin="serverPin" :isAdmin="state.isAdmin"
+      :users="state.users" w-full />
     <h1 text-3xl>{{ t("Welcome") }}</h1>
-    <h2 text-2xl>{{ t("Users") }}</h2>
-    <ul v-if="state.module==='waiting'" flex flex-row flex-wrap gap-1 m-5>
-      <li v-for="item in state.users" :key="item" w-30 h-30 bg-green rounded-full flex flex-align-center flex-items-center>
-        <span w-full text-center text-black>{{ item }}</span>
-        
-      </li>
-    </ul>
+    <div flex flex-col landscape:flex-row w-full flex-items-start flex-justify-center v-if="state.module === 'waiting'">
+      <div flex flex-col w-full flex-items-center h-full>
+        <h2 text-2xl>{{ t("Users") }}</h2>
+        <UserGrid :users="state.users" />
+      </div>
 
-    <div v-if="state.module === 'waiting'" flex-col w-full flex flex-items-center>
-      <h2 text-2xl>
-        {{
-          state.isAdmin
+      <div flex-col w-full flex flex-items-center h-full>
+        <h2 text-2xl>
+          {{
+            state.isAdmin
             ? t("module.waiting.adminMessage")
             : t("module.waiting.message")
-        }}
-      </h2>
-      <button
-        v-if="state.isAdmin"
-        @click="activateModule('wordcloud')"
-        bg-green
-        btn
-      >
-        {{ t("module.wordcloud.name") }}
-      </button>
-      <QrCOde :value="URL" :size="200" render-as="svg" :margin="1" w-50 h-50 m-3 />
-      
+          }}
+        </h2>
+        <button v-if="state.isAdmin" @click="activateModule('wordcloud')" btn>
+          <img src="../assets/Wordcloud_Image.optimized.svg" h-100px w-100px alt="Wordcloud">
+          {{ t("module.wordcloud.name") }}
+        </button>
+        <QrCode :url="URL" />
+      </div>
     </div>
-    <WordCloudModule
-      v-if="state.module === 'wordcloud'"
-      :words="state.moduleData.words || []"
-      :isAdmin="state.isAdmin"
-      :addWord="addWord"
-      :removeWord="removeWord"
-    />
+
+    <WordCloudModule v-if="state.module === 'wordcloud'" :words="state.moduleData.words || []" :isAdmin="state.isAdmin"
+      :addWord="addWord" :removeWord="removeWord" />
   </div>
+
+
+
   <div v-else flex flex-col flex-items-center flex-align-center m-t-10>
     <h1 text-3xl>{{ t("Welcome") }}</h1>
     <input v-model="pin" type="password" inp />
