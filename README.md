@@ -2,6 +2,8 @@
 
 ## **_BETA STATUS! DON'T RELY ON IT IN PRODUCTION!_**
 
+##Please give me feedback in the issues tab.
+
 Real-Time Collaboration Tool for Classrooms
 
 ## Features
