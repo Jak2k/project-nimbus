@@ -15,7 +15,7 @@ Real-Time Collaboration Tool for Classrooms
   - [ ] Kicking Users & Disallow new ones
 - [x] Self-Hosted locally
 - Modules
-  - [ ] Wordcloud
+  - [x] Wordcloud
   - [ ] Vote
   - [ ] Quiz
   - [ ] Mindmap
