@@ -1,7 +1,11 @@
 {
   "scripts": {
-    "build": "pnpm --filter client run build",
-    "start": "pnpm --filter server run start",
+    "build": "cd client && bun run build",
+    "start": "cd server && bun run start",
     "buncompile": "bun build --compile server/src/index.ts --outfile=projectcompetentia"
-  }
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
 }
