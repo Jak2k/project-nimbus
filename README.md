@@ -1,8 +1,8 @@
-# project-nimbus
+# Project-Nimbus
 
-## **_BETA STATUS! DON'T RELY ON IT IN PRODUCTION!_**
+> ## **_BETA STATUS! DON'T RELY ON IT IN PRODUCTION!_**
 
-##Please give me feedback in the issues tab.
+> ## Please give me feedback in the issues tab.
 
 Real-Time Collaboration Tool for Classrooms
 
@@ -11,7 +11,7 @@ Real-Time Collaboration Tool for Classrooms
 - [x] Real-Time Collaboration
 - [ ] Moderation
   - [x] Removing unwanted content
-  - [ ] Removing permanently
+  - [x] Removing permanently
   - [ ] Kicking Users & Disallow new ones
 - [x] Self-Hosted locally
 - Modules
@@ -35,7 +35,7 @@ Tutorial will be enhanced later...
    ```bash
    curl -s "https://raw.githubusercontent.com/Jak2k/Project-Nimbus/main/scripts/install_termux.sh" | sh -s
 
-```
+    ```
 
 -- OR --
 
@@ -60,4 +60,3 @@ Tutorial will be enhanced later...
 ### Linux / Windows
 
 Tutorial will be added later...
-```
