@@ -10,7 +10,7 @@
     "typescript": "^5.1.6"
   },
   "scripts": {
-    "start": "bun src/index.ts",
+    "start": "tsx src/index.ts",
     "check": "tsc src/index.ts --noEmit"
   }
 }
