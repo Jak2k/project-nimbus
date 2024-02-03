@@ -1,22 +1,48 @@
 pub mod broadcast;
 pub mod module;
 
-use std::borrow::Borrow;
 use std::{io, sync::Arc};
 
 use actix_session::storage::CookieSessionStore;
 use actix_session::{Session, SessionMiddleware};
-use actix_web::web::Payload;
 use actix_web::{get, middleware::Logger, post, web, App, HttpResponse, HttpServer, Responder};
 use actix_web_lab::respond::Html;
 
 use self::broadcast::Broadcaster;
 
+#[derive(Debug)]
 pub struct Server {
     module: Box<dyn module::Module>,
     pin: String,
     admin_pin: String,
     users: std::sync::Mutex<Vec<module::User>>,
+}
+
+impl Server {
+    pub fn serialize(&self) -> Result<String, String> {
+        let module = self.module.serialize()?;
+        let users = self
+            .users
+            .lock()
+            .unwrap()
+            .clone()
+            .iter()
+            .map(|u| (u.name.clone(), u.is_admin))
+            .collect::<Vec<_>>();
+        let users = serde_json::to_string(&users)
+            .map_err(|e| format!("failed to serialize users: {}", e))?;
+
+        Ok(format!(
+            r#"{{
+                "moduleId": "{}",
+                "module": {},
+                "users": {},
+            }}"#,
+            self.module.name(),
+            module,
+            users
+        ))
+    }
 }
 
 fn session_middleware() -> SessionMiddleware<CookieSessionStore> {
@@ -90,6 +116,8 @@ async fn dispatch(
         None => return HttpResponse::Unauthorized().body("not logged in"),
     };
 
+    println!("{:#?}", server);
+
     // look up user
     let users = server.users.lock().unwrap().clone();
 
@@ -107,7 +135,6 @@ async fn dispatch(
 
     println!("user: {:#?}", user);
 
-    // answer ok
     HttpResponse::Ok().body("msg sent")
 }
 
@@ -119,6 +146,7 @@ struct Login {
 
 #[post("/login")]
 async fn login(
+    broadcaster: web::Data<Broadcaster>,
     server: web::Data<Server>,
     body: actix_web::web::Json<Login>,
     session: Session,
@@ -134,6 +162,7 @@ async fn login(
             token,
         });
 
+        broadcaster.broadcast(&server.serialize().unwrap()).await;
         HttpResponse::Ok().body("logged in as user")
     } else if body.pin == server.admin_pin {
         let token = format!("{:x}", uuid::Uuid::new_v4());
@@ -146,6 +175,7 @@ async fn login(
             token,
         });
 
+        broadcaster.broadcast(&server.serialize().unwrap()).await;
         HttpResponse::Ok().body("logged in as admin")
     } else {
         HttpResponse::Unauthorized().body("wrong pin")

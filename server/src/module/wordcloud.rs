@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct Wordcloud {
     words: Vec<String>,
 }
@@ -37,11 +38,7 @@ impl super::Module for Wordcloud {
         Ok(())
     }
 
-    fn serialize_user(&self) -> Result<String, String> {
-        Ok("".to_owned())
-    }
-
-    fn serialize_admin(&self) -> Result<String, String> {
+    fn serialize(&self) -> Result<String, String> {
         Ok("".to_owned())
     }
 }
