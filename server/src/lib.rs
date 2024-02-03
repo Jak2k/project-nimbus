@@ -13,7 +13,7 @@ use self::broadcast::Broadcaster;
 
 #[derive(Debug)]
 pub struct Server {
-    module: Box<dyn module::Module>,
+    module: Box<dyn module::Module + Send + Sync>,
     pin: String,
     admin_pin: String,
     users: Arc<RwLock<Vec<module::User>>>,
@@ -62,18 +62,20 @@ pub async fn main() -> io::Result<()> {
 
     let data = Broadcaster::create();
 
+    let server = Arc::new(Server {
+        pin: "1234".to_owned(),
+        admin_pin: "123456".to_owned(),
+        module: Box::new(module::wordcloud::Wordcloud::default()),
+        users: Arc::new(RwLock::new(Vec::new())),
+    });
+
     log::info!("starting HTTP server at http://localhost:8080");
 
     HttpServer::new(move || {
         App::new()
             .wrap(session_middleware())
             .app_data(web::Data::from(Arc::clone(&data)))
-            .app_data(web::Data::new(Server {
-                pin: "1234".to_owned(),
-                admin_pin: "123456".to_owned(),
-                module: Box::new(module::wordcloud::Wordcloud::default()),
-                users: Arc::new(RwLock::new(Vec::new())),
-            }))
+            .app_data(web::Data::new(server.clone()))
             .service(index)
             .service(event_stream)
             .service(broadcast_msg)
@@ -106,7 +108,7 @@ async fn broadcast_msg(broadcaster: web::Data<Broadcaster>, msg: String) -> impl
 #[post("/dispatch")]
 async fn dispatch(
     broadcaster: web::Data<Broadcaster>,
-    server: web::Data<Server>,
+    server: web::Data<Arc<Server>>,
     msg: String,
     session: Session,
 ) -> impl Responder {
@@ -149,7 +151,7 @@ struct Login {
 #[post("/login")]
 async fn login(
     broadcaster: web::Data<Broadcaster>,
-    server: web::Data<Server>,
+    server: web::Data<Arc<Server>>,
     body: actix_web::web::Json<Login>,
     session: Session,
 ) -> impl Responder {
