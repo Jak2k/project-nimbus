@@ -8,6 +8,7 @@ use actix_session::storage::CookieSessionStore;
 use actix_session::{Session, SessionMiddleware};
 use actix_web::{get, middleware::Logger, post, web, App, HttpResponse, HttpServer, Responder};
 use actix_web_lab::respond::Html;
+use rand::Rng;
 
 use self::broadcast::Broadcaster;
 
@@ -57,14 +58,30 @@ fn session_middleware() -> SessionMiddleware<CookieSessionStore> {
     .build()
 }
 
+fn generate_pin(length: u8) -> String {
+    // generate a random numeric pin of the given length
+    let mut rng = rand::thread_rng();
+    let pin: Vec<u8> = (0..length).map(|_| rng.gen_range(0..10)).collect();
+
+    pin.iter().map(|d| d.to_string()).collect()
+}
+
 pub async fn main() -> io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
     let data = Broadcaster::create();
 
+    let pin = generate_pin(4);
+    let admin_pin = generate_pin(6);
+
+    println!("||===== PINS =====||");
+    println!("|| user:  {}    ||", pin);
+    println!("|| admin: {}  ||", admin_pin);
+    println!("||================||");
+
     let server = Arc::new(Server {
-        pin: "1234".to_owned(),
-        admin_pin: "123456".to_owned(),
+        pin,
+        admin_pin,
         module: Box::new(module::wordcloud::Wordcloud::default()),
         users: Arc::new(RwLock::new(Vec::new())),
     });
