@@ -1,6 +1,7 @@
 pub mod broadcast;
 pub mod module;
 
+use std::sync::{Mutex, RwLock};
 use std::{io, sync::Arc};
 
 use actix_session::storage::CookieSessionStore;
@@ -15,7 +16,7 @@ pub struct Server {
     module: Box<dyn module::Module>,
     pin: String,
     admin_pin: String,
-    users: std::sync::Mutex<Vec<module::User>>,
+    users: Arc<RwLock<Vec<module::User>>>,
 }
 
 impl Server {
@@ -23,7 +24,7 @@ impl Server {
         let module = self.module.serialize()?;
         let users = self
             .users
-            .lock()
+            .write()
             .unwrap()
             .clone()
             .iter()
@@ -71,7 +72,7 @@ pub async fn main() -> io::Result<()> {
                 pin: "1234".to_owned(),
                 admin_pin: "123456".to_owned(),
                 module: Box::new(module::wordcloud::Wordcloud::default()),
-                users: std::sync::Mutex::new(Vec::new()),
+                users: Arc::new(RwLock::new(Vec::new())),
             }))
             .service(index)
             .service(event_stream)
@@ -119,7 +120,7 @@ async fn dispatch(
     println!("{:#?}", server);
 
     // look up user
-    let users = server.users.lock().unwrap().clone();
+    let users = server.users.read().unwrap().clone();
 
     let uDBG = users.clone();
 
@@ -134,6 +135,7 @@ async fn dispatch(
     };
 
     println!("user: {:#?}", user);
+    broadcaster.broadcast(&msg).await;
 
     HttpResponse::Ok().body("msg sent")
 }
@@ -156,7 +158,7 @@ async fn login(
 
         session.insert("token", token.clone()).unwrap();
 
-        server.users.lock().unwrap().push(module::User {
+        server.users.write().unwrap().push(module::User {
             name: body.name.clone(),
             is_admin: false,
             token,
@@ -169,7 +171,7 @@ async fn login(
 
         session.insert("token", token.clone()).unwrap();
 
-        server.users.lock().unwrap().push(module::User {
+        server.users.write().unwrap().push(module::User {
             name: body.name.clone(),
             is_admin: true,
             token,
