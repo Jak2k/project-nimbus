@@ -14,15 +14,14 @@ use self::broadcast::Broadcaster;
 
 #[derive(Debug)]
 pub struct Server {
-    module: Box<dyn module::Module + Send + Sync>,
+    module: Arc<RwLock<Box<dyn module::Module + Send + Sync>>>,
     pin: String,
     admin_pin: String,
     users: Arc<RwLock<Vec<module::User>>>,
 }
 
 impl Server {
-    pub fn serialize(&self) -> Result<String, String> {
-        let module = self.module.serialize()?;
+    pub fn serialize(&self) -> Result<String, Box<dyn std::error::Error + '_>> {
         let users = self
             .users
             .write()
@@ -40,8 +39,8 @@ impl Server {
                 "module": {},
                 "users": {},
             }}"#,
-            self.module.name(),
-            module,
+            self.module.read()?.name(),
+            self.module.read()?.serialize()?,
             users
         ))
     }
@@ -82,7 +81,9 @@ pub async fn main() -> io::Result<()> {
     let server = Arc::new(Server {
         pin,
         admin_pin,
-        module: Box::new(module::wordcloud::Wordcloud::default()),
+        module: Arc::new(RwLock::new(Box::new(
+            module::wordcloud::Wordcloud::default(),
+        ))),
         users: Arc::new(RwLock::new(Vec::new())),
     });
 
@@ -154,7 +155,15 @@ async fn dispatch(
     };
 
     println!("user: {:#?}", user);
-    broadcaster.broadcast(&msg).await;
+
+    match server.module.write().unwrap().dispatch(&msg, &user) {
+        Ok(_) => (),
+        Err(e) => return HttpResponse::BadRequest().body(e),
+    }
+
+    let serialized = server.serialize().unwrap();
+
+    broadcaster.broadcast(&serialized).await;
 
     HttpResponse::Ok().body("msg sent")
 }

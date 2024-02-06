@@ -9,7 +9,7 @@ pub trait Module: std::fmt::Debug {
     fn name(&self) -> &'static str;
     fn load(&mut self) -> Result<(), String>;
     fn save(&self) -> Result<(), String>;
-    fn dispatch(&mut self, msg: &str, user: User) -> Result<(), String>;
+    fn dispatch(&mut self, msg: &str, user: &User) -> Result<(), String>;
     fn serialize(&self) -> Result<String, String>;
 }
 
