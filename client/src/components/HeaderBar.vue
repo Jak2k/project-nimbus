@@ -48,13 +48,17 @@ function download() {
       </select>
     </span>
 
-    <span flex flex-row><button v-if="isAdmin" btn bg-red @click="activateModule('waiting')">
+    <span flex flex-row flex-items-baseline        >
+      <button v-if="isAdmin" btn bg-red @click="activateModule('waiting')">
         {{ t("deactivateModule") }}
       </button>
       <h1 text-xl>Project Nimbus</h1>
-      <span m-1>{{ users[users.length -1] }}({{ users.length }})</span>
     </span>
-    <span><span m-1 p-1 font-900 text-xl font-mono>{{ t("PIN") }}: {{ serverPin }}</span><button btn bg-green
-        @click="download">Download</button></span>
+    <span>
+      <span m-1>{{ users.length }} {{ t('users') }}</span>
+      <span m-1 p-1 font-900 text-xl font-mono>{{ t("PIN") }}: {{ serverPin }}</span>
+      <button btn bg-green
+        @click="download">{{ t('download') }}</button>
+    </span>
   </div>
 </template>

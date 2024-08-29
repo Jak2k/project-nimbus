@@ -22,3 +22,5 @@ not-found: Not Found
 login:
   pin: PIN
   name: Name
+download: Download
+users: Users

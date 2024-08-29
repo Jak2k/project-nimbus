@@ -23,3 +23,5 @@ not-found: Nicht gefunden
 login:
   name: Name
   pin: PIN
+download: Herunterladen
+users: Nutzer
