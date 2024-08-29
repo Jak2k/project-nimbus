@@ -15,8 +15,6 @@ defineOptions({
 
 const serverPin = ref("");
 
-const { t } = useI18n();
-
 async function submitPin(pin: String, name: String) {
   socket.auth = { pin: pin, name: name };
   socket.connect();
