@@ -25,13 +25,6 @@ export default defineConfig({
       warn: true,
     }),
     presetTypography(),
-    presetWebFonts({
-      fonts: {
-        sans: "DM Sans",
-        serif: "DM Serif Display",
-        mono: "DM Mono",
-      },
-    }),
   ],
   transformers: [transformerDirectives(), transformerVariantGroup()],
   safelist: "prose m-auto text-left".split(" "),
