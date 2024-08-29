@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     HeaderBar: typeof import('./components/HeaderBar.vue')['default']
+    LoginModule: typeof import('./components/LoginModule.vue')['default']
     QrCode: typeof import('./components/QrCode.vue')['default']
     README: typeof import('./components/README.md')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

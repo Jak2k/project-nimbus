@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LoginModule from "~/components/LoginModule.vue";
 import {
   socket,
   state,
@@ -12,14 +13,12 @@ defineOptions({
   name: "IndexPage",
 });
 
-const pin = ref("");
-const name = useLocalStorage("name", "");
 const serverPin = ref("");
 
 const { t } = useI18n();
 
-async function submitPin() {
-  socket.auth = { pin: pin.value, name: name.value };
+async function submitPin(pin: String, name: String) {
+  socket.auth = { pin: pin, name: name };
   socket.connect();
   const { sessionPin, userType } = await socket.emitWithAck("join");
   if (userType === "user") {
@@ -63,17 +62,7 @@ async function submitPin() {
     />
   </div>
 
-  <form v-else flex flex-col flex-items-center flex-align-center m-t-10 @submit="e => {e.preventDefault();submitPin()}">
-    <h1 text-3xl>{{ t("Welcome") }}</h1>
-    <label for="nameInp">{{ t("login.name") }}</label>
-    <input v-model="name" type="text" inp id="nameInp" />
-    
-    <label for="pinInp">{{ t("login.pin") }}</label>
-    <input v-model="pin" type="text" inp id="pinInp" />
-    <button @click="submitPin()" btn bg-green>
-      {{ t("Connect") }}
-    </button>
-  </form>
+  <LoginModule v-else :submitPin />
 
   <footer text-center p-5 m-xl>
     <p>
