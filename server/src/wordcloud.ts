@@ -1,5 +1,4 @@
-import { BroadcastOperator, Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { Socket } from "socket.io";
 import { actionHandler, joinHandler } from ".";
 
 let words: {
@@ -13,9 +12,11 @@ function isWordAlreadyAdded(word: string) {
 }
 
 function getWords() {
-  return words.filter(w=>!w.removed).map((w) => {
-    return { word: w.word, count: w.users.length };
-  });
+  return words
+    .filter((w) => !w.removed)
+    .map((w) => {
+      return { word: w.word, count: w.users.length };
+    });
 }
 
 const handleAction: actionHandler = (
@@ -31,9 +32,8 @@ const handleAction: actionHandler = (
     case "addWord":
       if (isWordAlreadyAdded(data[0])) {
         const i = words.findIndex((w) => w.word === data[0]);
-        if(user.isAdmin && words[i].removed) words[i].removed = false;
-        if(!words[i].users.includes(user.name))
-        words[i].users.push(user.name);
+        if (user.isAdmin && words[i].removed) words[i].removed = false;
+        if (!words[i].users.includes(user.name)) words[i].users.push(user.name);
       } else {
         words.push({
           word: data[0],
@@ -64,7 +64,11 @@ const init = (broadcast: (event: string, data: any) => void) => {
 };
 
 const handleDownload = (req: any, res: any) => {
-  res.end(getWords().map(w=>`${w.word} ${w.count}`).join("\n"));
+  res.end(
+    getWords()
+      .map((w) => `${w.word} ${w.count}`)
+      .join("\n")
+  );
 };
 
 export default {
