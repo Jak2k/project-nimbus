@@ -34,12 +34,12 @@ function download() {
 <template>
   <div m-3 p-3 rounded-full bg-gray-100 dark:bg-gray-900 flex flex-row flex-justify-between flex-items-baseline>
     <span><span v-if="connected" text-green>
-        <div i-carbon-plug inline-block></div>
-        {{ t("connected") }}
+        <span i-carbon-plug inline-block></span>
+        <span sr-only>{{ t("connected") }}</span>
       </span>
       <span v-else text-red>
-        <div i-carbon-close inline-block />
-        {{ t("disconnected") }}
+        <span i-carbon-close inline-block />
+        <span sr-only>{{ t("disconnected") }}</span>
       </span>
       <label for="locale" sr-only>{{ t("language") }}</label>
       <select btn dark:text-white v-model="locale" @change="loadLanguageAsync(locale)" id="locale" w-5em>
@@ -53,7 +53,7 @@ function download() {
       <button v-if="isAdmin" btn bg-red @click="activateModule('waiting')">
         {{ t("deactivateModule") }}
       </button>
-      <h1 text-xl>Project Nimbus</h1>
+      <h1 text-xl>Nimbus <span bg-orange p-1 rounded-1 text-black>Beta</span> </h1>
     </span>
     <span>
       <span m-1>{{ users.length }} {{ t('users') }}</span>
