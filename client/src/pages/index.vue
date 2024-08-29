@@ -44,41 +44,15 @@ async function submitPin() {
       :users="state.users"
       w-full
     />
-    <h1 text-3xl>{{ t("Welcome") }}</h1>
-    <div
-      flex
-      flex-col
-      landscape:flex-row
-      w-full
-      flex-items-start
-      flex-justify-center
+    
+    <WaitingModule
       v-if="state.module === 'waiting'"
-    >
-      <div flex flex-col w-full flex-items-center h-full>
-        <h2 text-2xl>{{ t("Users") }}</h2>
-        <UserGrid :users="state.users" />
-      </div>
-
-      <div flex-col w-full flex flex-items-center h-full>
-        <h2 text-2xl>
-          {{
-            state.isAdmin
-              ? t("module.waiting.adminMessage")
-              : t("module.waiting.message")
-          }}
-        </h2>
-        <button v-if="state.isAdmin" @click="activateModule('wordcloud')" btn dark:text-white>
-          <img
-            src="../assets/Wordcloud_Image.optimized.svg"
-            h-100px
-            w-100px
-            alt="Wordcloud"
-          />
-          {{ t("module.wordcloud.name") }}
-        </button>
-        <QrCode :url="URL" />
-      </div>
-    </div>
+      :users="state.users"
+      :isAdmin="state.isAdmin"
+      :activateModule="activateModule"
+      :URL="URL"
+    />
+    
 
     <WordCloudModule
       v-if="state.module === 'wordcloud'"

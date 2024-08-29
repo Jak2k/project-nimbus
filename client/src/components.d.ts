@@ -13,6 +13,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     UserGrid: typeof import('./components/UserGrid.vue')['default']
+    WaitingModule: typeof import('./components/WaitingModule.vue')['default']
     WordCloudModule: typeof import('./components/WordCloudModule.vue')['default']
   }
 }
