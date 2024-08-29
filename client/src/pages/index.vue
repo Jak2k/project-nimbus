@@ -7,6 +7,7 @@ import {
   addWord,
   removeWord,
   activateModule,
+  secret,
 } from "../socket";
 
 defineOptions({
@@ -16,7 +17,7 @@ defineOptions({
 const serverPin = ref("");
 
 async function submitPin(pin: String, name: String) {
-  socket.auth = { pin: pin, name: name };
+  socket.auth = { pin: pin, name: name, secret: secret };
   socket.connect();
   const { sessionPin, userType } = await socket.emitWithAck("join");
   if (userType === "user") {

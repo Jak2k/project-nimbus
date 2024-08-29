@@ -22,30 +22,39 @@ console.log(`Admin pin: ${adminPin}`);
 
 const staticDir = path.resolve("../client/dist");
 
-let users = [];
+let users: String[] = [];
+let userSecrets: Map<string, string> = new Map();
 
-export type actionHandler = (action: string, data: any, user: { isAdmin: boolean, name: string }, broadcast: (event: string, data: any) => void) => true | false | void
-export type joinHandler = (socket: Socket) => void
+export type actionHandler = (
+  action: string,
+  data: any,
+  user: { isAdmin: boolean; name: string },
+  broadcast: (event: string, data: any) => void
+) => true | false | void;
+export type joinHandler = (socket: Socket) => void;
 export type module = {
-  handleAction: actionHandler,
-  handleJoin: joinHandler,
-  id: string
-  init: (broadcast: (event: string, data: any) => void) => void
-  handleDownload: (req: any, res: any) => void
-}
+  handleAction: actionHandler;
+  handleJoin: joinHandler;
+  id: string;
+  init: (broadcast: (event: string, data: any) => void) => void;
+  handleDownload: (req: any, res: any) => void;
+};
 
-const waitingHandler: actionHandler = (action: string, data: any, user: { isAdmin: boolean, name: string }, broadcast: (event: string, data: any) => void) => false
+const waitingHandler: actionHandler = (
+  action: string,
+  data: any,
+  user: { isAdmin: boolean; name: string },
+  broadcast: (event: string, data: any) => void
+) => false;
 const knownModules: Map<string, module> = new Map();
 knownModules.set("waiting", {
   handleAction: waitingHandler,
-  handleJoin: (socket: Socket) => {
-
-  },
+  handleJoin: (socket: Socket) => {},
   id: "waiting",
   init: (broadcast: (event: string, data: any) => void) => {},
   handleDownload: (req, res) => {
-    res.end("This module does not support downloads.")
-  }
+    res.end("This module does not support downloads.");
+  },
 });
 knownModules.set("wordcloud", wordcloud);
 let activeModule: module = knownModules.get("waiting")!;
@@ -58,39 +67,67 @@ app.get("/download", (req, res) => {
   activeModule.handleDownload(req, res);
 });
 
-
 // all routes that are not found should be served from static dir or redirect to index.html
 app.use(express.static(staticDir));
 
 function broadcast(event: string, data: any) {
-    io.emit(event, data);
-  }
+  io.emit(event, data);
+}
 
 io.on("connection", (socket) => {
-  if(socket.handshake.auth.pin !== adminPin && socket.handshake.auth.pin !== sessionPin) {
+  if (
+    socket.handshake.auth.pin !== adminPin &&
+    socket.handshake.auth.pin !== sessionPin
+  ) {
     socket.disconnect();
     return;
   }
 
   if (!socket.handshake.auth.name) socket.disconnect();
-  
-  socket.on("join", (callback: (resp: {
-    userType: string;
-    sessionPin: string;
-  }) => void) => {
-    // @ts-ignore
-    users.push(socket.handshake.auth.name || "Anonymous");
-    callback({userType: socket.handshake.auth.pin.toString().length === 6 ? "admin" : "user", sessionPin});
-    io.emit("updateUsers", users);
 
-    socket.emit("updateModule", activeModule.id);
-    activeModule.handleJoin(socket);
-  });
+  socket.on(
+    "join",
+    (callback: (resp: { userType: string; sessionPin: string }) => void) => {
+      if (users.includes(socket.handshake.auth.name || "Anonymous")) {
+        // check secret
+        if (
+          userSecrets.get(socket.handshake.auth.name || "Anonymous") !==
+          (socket.handshake.auth.secret._value || "")
+        ) {
+          console.log(
+            "Secret mismatch for user",
+            socket.handshake.auth.name || "Anonymous",
+            "Secret:",
+            socket.handshake.auth.secret._value,
+            "Correct secret:",
+            userSecrets.get(socket.handshake.auth.name || "Anonymous")
+          );
+          socket.disconnect();
+          return;
+        }
+      } else {
+        users.push(socket.handshake.auth.name || "Anonymous");
+        userSecrets.set(
+          socket.handshake.auth.name || "Anonymous",
+          socket.handshake.auth.secret._value || ""
+        );
+      }
+      callback({
+        userType:
+          socket.handshake.auth.pin.toString().length === 6 ? "admin" : "user",
+        sessionPin,
+      });
+      io.emit("updateUsers", users);
+
+      socket.emit("updateModule", activeModule.id);
+      activeModule.handleJoin(socket);
+    }
+  );
 
   socket.on("activateModule", (module: string) => {
     if (socket.handshake.auth.pin !== adminPin) return;
 
-    if(!knownModules.has(module)) {
+    if (!knownModules.has(module)) {
       return;
     }
 
@@ -99,15 +136,20 @@ io.on("connection", (socket) => {
     activeModule.init(broadcast);
   });
 
-  
-
   socket.onAny((event, ...args) => {
-    const succes = activeModule.handleAction(event, args, {isAdmin: socket.handshake.auth.pin === adminPin, name: socket.handshake.auth.name || "Anonymous"}, broadcast);
-    if(succes) {
+    const succes = activeModule.handleAction(
+      event,
+      args,
+      {
+        isAdmin: socket.handshake.auth.pin === adminPin,
+        name: socket.handshake.auth.name || "Anonymous",
+      },
+      broadcast
+    );
+    if (succes) {
       socket.emit("actionSuccess", event);
     }
   });
-
 });
 
 server.listen(3000, () => {

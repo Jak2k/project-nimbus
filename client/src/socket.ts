@@ -1,72 +1,78 @@
-import { io } from 'socket.io-client'
+import { io } from "socket.io-client";
 
 export const state = reactive<{
-  pin: string
-  started: boolean
-  connected: boolean
-  isAdmin: boolean
-  users: string[]
+  pin: string;
+  started: boolean;
+  connected: boolean;
+  isAdmin: boolean;
+  users: string[];
 
-  module: string
-  moduleData: any
+  module: string;
+  moduleData: any;
 }>({
-  pin: '',
+  pin: "",
   started: false,
   connected: false,
   isAdmin: false,
   users: [],
 
-  module: 'waiting',
+  module: "waiting",
   moduleData: {},
-})
+});
 
-const window = globalThis?.window || {}
+function randomSecret() {
+  return Math.random().toString(36).substring(2, 15);
+}
 
-export const URL = import.meta.env.DEV ? 'http://localhost:3000' : `${window?.location?.protocol || 'https'}//${window?.location?.host || ''}`
+export const secret = useLocalStorage("nimus_secret", randomSecret());
+
+const window = globalThis?.window || {};
+
+export const URL = import.meta.env.DEV
+  ? "http://localhost:3000"
+  : `${window?.location?.protocol || "https"}//${window?.location?.host || ""}`;
 
 export const socket = io(URL, {
   autoConnect: false,
-})
+});
 
-socket.on('connect', () => {
-  state.connected = true
-})
+socket.on("connect", () => {
+  state.connected = true;
+});
 
-socket.on('disconnect', () => {
-  state.connected = false
-})
+socket.on("disconnect", () => {
+  state.connected = false;
+});
 
-socket.on('updateWords', (words: string[]) => {
-  state.moduleData.words = words
-})
+socket.on("updateWords", (words: string[]) => {
+  state.moduleData.words = words;
+});
 
-socket.on('updateUsers', (users: string[]) => {
-  state.users = users
-})
+socket.on("updateUsers", (users: string[]) => {
+  state.users = users;
+});
 
-socket.on('updateModule', (module: string) => {
-  state.module = module
-})
+socket.on("updateModule", (module: string) => {
+  state.module = module;
+});
 
 export function addWord(word: string, onSuccess: () => void) {
-  if (state.module !== 'wordcloud')
-    return
+  if (state.module !== "wordcloud") return;
 
-  socket.emit('addWord', word)
+  socket.emit("addWord", word);
 
-  socket.on('actionSuccess', () => {
-    onSuccess()
-    socket.off('actionSuccess')
-  })
+  socket.on("actionSuccess", () => {
+    onSuccess();
+    socket.off("actionSuccess");
+  });
 }
 
 export function removeWord(word: string) {
-  if (state.module !== 'wordcloud' || !state.isAdmin)
-    return
+  if (state.module !== "wordcloud" || !state.isAdmin) return;
 
-  socket.emit('removeWord', word)
+  socket.emit("removeWord", word);
 }
 
 export function activateModule(module: string) {
-  socket.emit('activateModule', module)
+  socket.emit("activateModule", module);
 }
