@@ -67,7 +67,7 @@ async function submitPin() {
               : t("module.waiting.message")
           }}
         </h2>
-        <button v-if="state.isAdmin" @click="activateModule('wordcloud')" btn>
+        <button v-if="state.isAdmin" @click="activateModule('wordcloud')" btn dark:text-white>
           <img
             src="../assets/Wordcloud_Image.optimized.svg"
             h-100px
