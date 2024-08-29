@@ -19,3 +19,6 @@ deactivateModule: Leave Module
 button:
   back: Back
 not-found: Not Found
+login:
+  pin: PIN
+  name: Name

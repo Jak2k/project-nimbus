@@ -20,3 +20,6 @@ deactivateModule: Modul verlassen
 button:
   back: Zurück
 not-found: Nicht gefunden
+login:
+  name: Name
+  pin: PIN

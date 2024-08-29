@@ -1,6 +1,7 @@
 {
-  "i18n-ally.localesPaths": [
-    "client/locales"
-  ],
-  "i18n-ally.keystyle": "nested"
+  "i18n-ally.localesPaths": ["client/locales"],
+  "i18n-ally.pathMatcher": "{locale}.yml",
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.enabledFrameworks": ["vue-sfc"],
+  "vue.server.hybridMode": true
 }
