@@ -66,7 +66,11 @@ const init = (broadcast: (event: string, data: any) => void) => {
 const handleDownload = (req: any, res: any) => {
   res.end(
     getWords()
-      .map((w) => `${w.word} ${w.count}`)
+      .sort((a: any, b: any) => {
+        if (a.count === b.count) return a.word.localeCompare(b.word);
+        b.count - a.count;
+      })
+      .map((w) => `${w.count} ${w.word}`)
       .join("\n")
   );
 };
