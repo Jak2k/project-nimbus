@@ -41,7 +41,8 @@ function download() {
         <div i-carbon-close inline-block />
         {{ t("disconnected") }}
       </span>
-      <select btn v-model="locale" @change="loadLanguageAsync(locale)" w-5em>
+      <label for="locale" sr-only>{{ t("language") }}</label>
+      <select btn dark:text-white v-model="locale" @change="loadLanguageAsync(locale)" id="locale" w-5em>
         <option v-for="locale in availableLocales" :key="locale" :value="locale" w-5em>
           {{ locale }}
         </option>

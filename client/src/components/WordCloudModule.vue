@@ -10,8 +10,6 @@ defineProps<{
 
 const word = ref("");
 
-;
-
 const { width, height } = useWindowSize();
 
 const { t } = useI18n();
@@ -21,15 +19,18 @@ const { t } = useI18n();
   <div>
     <h2 text-2xl>Words</h2>
     <p>{{ isAdmin ? t('module.wordcloud.clickToRemove') : t('module.wordcloud.clickToSubmit') }}</p>
-    <div>
+    <div v-if="isAdmin">
       <span v-for="item in words" :key="item.word" @click="removeWord(item.word || '')">
         {{ item.word || "" }} ({{ item.count || 0 }})
       </span>
     </div>
-    <input v-model="word" type="text" inp />
-    <button @click="addWord(word, () => word = '')" bg-green btn>
-      {{ t("module.wordcloud.addWord") }}
-    </button>
+    <form flex flex-row @submit="e => {e.preventDefault(); addWord(word, () => word = '')}">
+      <label for="word" sr-only>{{ t("module.wordcloud.addWord") }}</label>
+      <input v-model="word" type="text" inp />
+      <button @click="addWord(word, () => word = '')" bg-green btn>
+        {{ t("module.wordcloud.addWord") }}
+      </button>
+    </form>
     <Vue3WordCloud :style="`height: ${height * 2 / 3}px; width: ${width * 9 / 10}px; overflow: hidden;`"
       :words="words.map(w => [w.word, w.count])"
       :color="([, weight]: [string, number]) => weight > 2 ? 'var(--cloud-font)' : weight > 1 ? 'var(--cloud-font2)' : 'var(--cloud-font3)'"
@@ -56,6 +57,6 @@ html {
 html.dark {
   --cloud-font: hsl(221, 39%, 100%);
   --cloud-font2: hsl(221, 39%, 75%);
-  --cloud-font3: hsl(221, 39%, 40%);
+  --cloud-font3: hsl(221, 100%, 73%);
 }
 </style>
