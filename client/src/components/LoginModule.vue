@@ -20,5 +20,7 @@ const { t } = useI18n();
     <button @click="submitPin(pin, name)" btn bg-green>
       {{ t("Connect") }}
     </button>
+
+    <p p-x-5 max-w-xl>{{ t('login.nameReuse') }}</p>
   </form>
 </template>

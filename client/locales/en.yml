@@ -22,6 +22,9 @@ not-found: Not Found
 login:
   pin: PIN
   name: Name
+  nameReuse: >-
+    A name can only be used once and only on one device or browser. The PIN must
+    be either the 4 digit user PIN or the 6 digit admin PIN.
 download: Download
 users: Users
 language: Language
