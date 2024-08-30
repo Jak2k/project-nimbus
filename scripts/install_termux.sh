@@ -35,7 +35,7 @@ fi
 # Install dependencies (node)
 
 cd project-nimbus
-pnpm i
+pnpm i --frozen-lockfile
 echo "✅ Installed node dependencies"
 
 # build

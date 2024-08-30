@@ -1,6 +1,6 @@
 git pull
 echo "✅ Downloaded latest version of Project Nimbus"
-pnpm i
+pnpm i --frozen-lockfile
 echo "✅ Installed latest dependencies"
 pnpm run build
 echo "✅ Built Project Nimbus"
