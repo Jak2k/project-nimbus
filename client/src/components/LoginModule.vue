@@ -10,8 +10,8 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <form flex flex-col flex-items-center flex-align-center m-t-10 @submit="e => {e.preventDefault();submitPin(pin, name)}">
-    <h1 text-3xl>{{ t("Welcome") }}</h1>
+  <form flex flex-col flex-items-center flex-align-center p-t-10 @submit="e => {e.preventDefault();submitPin(pin, name)}">
+    <h1 text-3xl m-b-10>{{ t("Welcome") }}</h1>
     <label for="nameInp">{{ t("login.name") }}</label>
     <input v-model="name" type="text" inp id="nameInp" />
     
