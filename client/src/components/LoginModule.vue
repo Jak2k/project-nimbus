@@ -13,11 +13,11 @@ const { t } = useI18n();
   <form flex flex-col flex-items-center flex-align-center p-t-10 @submit="e => {e.preventDefault();submitPin(pin, name)}">
     <h1 text-3xl m-b-10>{{ t("Welcome") }}</h1>
     <label for="nameInp">{{ t("login.name") }}</label>
-    <input v-model="name" type="text" inp id="nameInp" />
+    <input v-model="name" type="text" inp id="nameInp" m-b-xl />
     
     <label for="pinInp">{{ t("login.pin") }}</label>
-    <input v-model="pin" type="text" inp id="pinInp" />
-    <button @click="submitPin(pin, name)" btn bg-green>
+    <input v-model="pin" type="text" inp id="pinInp" m-b-xl />
+    <button @click="submitPin(pin, name)" btn bg-green m-b-xl>
       {{ t("Connect") }}
     </button>
 
