@@ -1,30 +1,29 @@
-Welcome: Welcome to Project Nimbus
 Connect: Connect
-connected: Connected
-disconnected: Disconnected
-Users: Users
 PIN: PIN
+Users: Users
+Welcome: Welcome to Project Nimbus
+button:
+  back: Back
+connected: Connected
+deactivateModule: Quit Module
+disconnected: Disconnected
+download: Download
+language: Language
+login:
+  name: Name
+  nameReuse: >-
+    A name can only be used once and only on one device or browser. The PIN has
+    to be either the 4 digit user PIN or the 6 digit admin PIN.
+  pin: PIN
 module:
-  wordcloud:
-    name: Wordcloud
-    clickToRemove: >-
-      Click on a word below to remove. Recover by submiting in input below.
-      Click on a word in the cloud to submit it yourself.
-    addWord: Add Word
-    clickToSubmit: Click on a word in the cloud to submit it yourself.
   waiting:
     adminMessage: Select a module below
     message: Please wait for an admin to start a module
-deactivateModule: Leave Module
-button:
-  back: Back
+  wordcloud:
+    addWord: Add Word
+    clickToRemove: >-
+      Click on a word below to remove it. Recover it by submitting it to the
+      input below. Click on a word in the cloud to make it larger.
+    clickToSubmit: Click on a word in the cloud to make it larger.
+    name: Wordcloud
 not-found: Not Found
-login:
-  pin: PIN
-  name: Name
-  nameReuse: >-
-    A name can only be used once and only on one device or browser. The PIN must
-    be either the 4 digit user PIN or the 6 digit admin PIN.
-download: Download
-users: Users
-language: Language

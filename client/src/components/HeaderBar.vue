@@ -56,7 +56,7 @@ function download() {
       <h1 text-xl>Nimbus <span bg-orange p-1 rounded-1 text-black>Beta</span> </h1>
     </span>
     <span>
-      <span m-1>{{ users.length }} {{ t('users') }}</span>
+      <span m-1>{{ users.length }} {{ t('Users') }}</span>
       <span m-1 p-1 font-900 text-xl font-mono>{{ t("PIN") }}: {{ serverPin }}</span>
       <button btn bg-green
         @click="download">{{ t('download') }}</button>

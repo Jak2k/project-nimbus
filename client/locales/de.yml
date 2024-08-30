@@ -1,32 +1,31 @@
 Connect: Verbinden
-Welcome: Willkommen zu Project Nimbus
-connected: Verbunden
-disconnected: Nicht Verbunden
-Users: Benutzer
 PIN: PIN
-module:
-  wordcloud:
-    name: Wörterwolke
-    clickToRemove: >-
-      Um ein Wort zu entfernen, klicken sie unten auf dieses. Um es
-      wiederherzustellen, geben sie es unten in das Textfeld ein. Klicken sie
-      auf ein Wort in der Wolke um es selbst abzusenden.
-    addWord: Wort hinzufügen
-    clickToSubmit: Klicke auf ein Wort in der Wolke, um es selbst abzusenden.
-  waiting:
-    adminMessage: Wählen sie unten ein Modul aus
-    message: Bitte warte, bis ein Admin ein Modul startet
-deactivateModule: Modul verlassen
+Users: Nutzende
+Welcome: Willkommen zu Project Nimbus
 button:
   back: Zurück
-not-found: Nicht gefunden
+connected: Verbunden
+deactivateModule: Modul beenden
+disconnected: Nicht Verbunden
+download: Herunterladen
+language: Sprache
 login:
   name: Name
-  pin: PIN
   nameReuse: >-
-    Ein Name kann nur einmal benutzt werden und auch nur auf einem Gerät bzw. in
-    einem Browser. Die PIN muss entweder die vierstellige Nutzer-PIN oder die
-    sechsstellige Admin-PIN sein.
-download: Herunterladen
-users: Nutzer
-language: Sprache
+    Jeder Name kann nur einmal benutzt werden und auch nur auf einem Gerät bzw.
+    in einem Browser. Die PIN muss entweder die vierstellige Nutzenden-PIN oder
+    die sechsstellige Administrations-PIN sein.
+  pin: PIN
+module:
+  waiting:
+    adminMessage: Wählen Sie unten ein Modul aus
+    message: Bitte warte, bis ein Modul gestartet wird.
+  wordcloud:
+    addWord: Wort hinzufügen
+    clickToRemove: >-
+      Um ein Wort zu entfernen, klicken Sie unten auf dieses. Um es
+      wiederherzustellen, geben sie es unten in das Textfeld ein. Klicken Sie
+      auf ein Wort in der Wolke, um es größer zu machen.
+    clickToSubmit: Klicke auf ein Wort in der Wolke, um es größer zu machen.
+    name: Wörterwolke
+not-found: Nicht gefunden
