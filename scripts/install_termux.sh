@@ -13,7 +13,7 @@ apt-get update -o Dpkg::Options::="--force-confnew" -o Dpkg::Options::="--force-
 
 # Install dependencies
 
-apt-get install -y git nodejs-lts
+apt-get install -y git nodejs-lts jq
 echo "✅ Installed dependencies"
 
 # Clone repo

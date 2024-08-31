@@ -44,7 +44,7 @@ Tutorial will be enhanced later...
 
 1. Install Termux
 2. In termux, run `pkg update && pkg upgrade` (When you get asked for something, type `y` and press enter)
-3. Run `pkg i nodejs git` (When you get asked for something, type `y` and press enter)
+3. Run `pkg i nodejs git jq` (When you get asked for something, type `y` and press enter)
 4. Clone the repo
 5. run `npm i -g pnpm` (When you get asked for something, type `y` and press enter)
 1. run `cd Project-Nimbus`
@@ -63,7 +63,7 @@ Tutorial will be enhanced later...
 ### Linux
 
 1. Clone the repo `git clone https://github.com/Jak2k/Project-Nimbus.git`
-2. Install nodejs (if you haven't already) and pnpm `npm i -g pnpm`
+2. Install nodejs & **jq** (if you haven't already) and pnpm `npm i -g pnpm`.
 3. Enter the folder `cd Project-Nimbus`
 4. Install dependencies `pnpm i`
 5. Build the project `pnpm build`
