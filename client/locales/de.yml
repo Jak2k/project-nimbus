@@ -20,6 +20,7 @@ module:
   waiting:
     adminMessage: Wählen Sie unten ein Modul aus
     message: Bitte warte, bis ein Modul gestartet wird.
+    quit: Server neustarten und Nutzendenliste leeren
   wordcloud:
     addWord: Wort hinzufügen
     clickToRemove: >-

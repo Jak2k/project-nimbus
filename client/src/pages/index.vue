@@ -8,6 +8,7 @@ import {
   removeWord,
   activateModule,
   secret,
+  restart,
 } from "../socket";
 
 defineOptions({
@@ -49,6 +50,7 @@ async function submitPin(pin: String, name: String) {
       :isAdmin="state.isAdmin"
       :activateModule="activateModule"
       :URL="URL"
+      :quit="restart"
     />
     
 

@@ -153,6 +153,16 @@ io.on("connection", (socket) => {
     activeModule.init(broadcast);
   });
 
+  socket.on("restart", () => {
+    if (socket.handshake.auth.pin !== ADMIN_PASSWORD) return;
+
+    io.emit("restarting");
+
+    setTimeout(() => {
+      process.exit(0);
+    }, 500);
+  });
+
   socket.onAny((event, ...args) => {
     const succes = activeModule.handleAction(
       event,

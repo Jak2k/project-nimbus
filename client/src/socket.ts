@@ -56,6 +56,12 @@ socket.on("updateModule", (module: string) => {
   state.module = module;
 });
 
+socket.on("restarting", () => {
+  setTimeout(() => {
+    window.location.reload();
+  }, 2000);
+});
+
 export function addWord(word: string, onSuccess: () => void) {
   if (state.module !== "wordcloud") return;
 
@@ -75,4 +81,17 @@ export function removeWord(word: string) {
 
 export function activateModule(module: string) {
   socket.emit("activateModule", module);
+}
+
+export function restart() {
+  if (!state.isAdmin) return;
+
+  // ask for confirmation
+  const confirmed = confirm(
+    "Are you sure you want to restart the server and kick all users?",
+  );
+
+  if (!confirmed) return;
+
+  socket.emit("restart");
 }

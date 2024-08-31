@@ -19,6 +19,7 @@ module:
   waiting:
     adminMessage: Select a module below
     message: Please wait for an admin to start a module
+    quit: Restart server and kick everyone
   wordcloud:
     addWord: Add Word
     clickToRemove: >-
