@@ -32,7 +32,7 @@ async function submitPin(pin: String, name: String) {
 </script>
 
 <template>
-  <div v-if="state.started" flex flex-col flex-items-center m-1 p-1>
+  <div v-if="state.started" flex flex-col flex-items-center p-1>
     <HeaderBar
       :connected="state.connected"
       :downloadLink="URL"
@@ -61,7 +61,7 @@ async function submitPin(pin: String, name: String) {
 
   <LoginModule v-else :submitPin />
 
-  <footer text-center p-5 m-xl>
+  <footer text-center p-xl>
     <p>
       Made as an <a href="https://github.com/jak2k/project-nimbus" target="_blank" underline text-blue>open-source project</a> by <a href="https://jak2k.schwanenberg.name" target="_blank" underline text-blue>Jak2k</a>.
     </p>
