@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "pnpm --filter client run build",
-    "start": "pnpm --filter server run start",
+    "start": "bash ./run.sh",
     "buncompile": "bun build --compile server/src/index.ts --outfile=projectcompetentia"
   }
 }

@@ -16,7 +16,7 @@ const { t } = useI18n();
     <input v-model="name" type="text" inp id="nameInp" m-b-xl />
     
     <label for="pinInp">{{ t("login.pin") }}</label>
-    <input v-model="pin" type="text" inp id="pinInp" m-b-xl />
+    <input v-model="pin" type="password" inp id="pinInp" m-b-xl />
     <button @click="submitPin(pin, name)" btn bg-green m-b-xl>
       {{ t("Connect") }}
     </button>

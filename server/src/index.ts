@@ -3,6 +3,7 @@ import http from "http";
 import { Event, Server, Socket } from "socket.io";
 import os from "os";
 import path from "path";
+import process from "process";
 
 import wordcloud from "./wordcloud";
 
@@ -20,8 +21,27 @@ function generatePin(length: number) {
   ).toString();
 }
 
+type Config = {
+  adminPassword?: string;
+};
+
+// read config as json from args
+const args = process.argv.slice(2);
+let config: Config = { adminPassword: undefined };
+if (args.length > 0) {
+  try {
+    config = JSON.parse(args[0]);
+    console.log("Config loaded", config);
+  } catch (e) {
+    console.error("Failed to parse config", e);
+    process.exit(1);
+  }
+} else {
+  console.log("No config provided, using default values");
+}
+
 const SESSION_PIN = generatePin(4);
-const ADMIN_PIN = generatePin(6);
+const ADMIN_PASSWORD = config.adminPassword || generatePin(6);
 const STATIC_DIR = path.resolve("../client/dist");
 
 const knownModules: Map<string, module> = new Map();
@@ -72,7 +92,7 @@ function broadcast(event: string, data: any) {
 
 io.on("connection", (socket) => {
   if (
-    (socket.handshake.auth.pin !== ADMIN_PIN &&
+    (socket.handshake.auth.pin !== ADMIN_PASSWORD &&
       socket.handshake.auth.pin !== SESSION_PIN) ||
     !socket.handshake.auth.secret ||
     !socket.handshake.auth.name
@@ -122,7 +142,7 @@ io.on("connection", (socket) => {
   );
 
   socket.on("activateModule", (module: string) => {
-    if (socket.handshake.auth.pin !== ADMIN_PIN) return;
+    if (socket.handshake.auth.pin !== ADMIN_PASSWORD) return;
 
     if (!knownModules.has(module)) {
       return;
@@ -138,7 +158,7 @@ io.on("connection", (socket) => {
       event,
       args,
       {
-        isAdmin: socket.handshake.auth.pin === ADMIN_PIN,
+        isAdmin: socket.handshake.auth.pin === ADMIN_PASSWORD,
         name: socket.handshake.auth.name,
       },
       broadcast
@@ -173,5 +193,5 @@ server.listen(3000, () => {
 
   console.log(`Open http://${ip}:3000/ to login`);
   console.log(`Session pin: ${SESSION_PIN}`);
-  console.log(`Admin pin: ${ADMIN_PIN}`);
+  console.log(`Admin pin: ${ADMIN_PASSWORD}`);
 });
