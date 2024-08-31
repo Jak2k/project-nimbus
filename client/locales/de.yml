@@ -29,4 +29,5 @@ module:
       auf ein Wort in der Wolke, um es größer zu machen.
     clickToSubmit: Klicke auf ein Wort in der Wolke, um es größer zu machen.
     name: Wörterwolke
+    words: Wörter
 not-found: Nicht gefunden

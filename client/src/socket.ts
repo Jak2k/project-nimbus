@@ -8,7 +8,6 @@ export const state = reactive<{
   users: string[];
 
   module: string;
-  moduleData: any;
 }>({
   pin: "",
   started: false,
@@ -17,7 +16,6 @@ export const state = reactive<{
   users: [],
 
   module: "waiting",
-  moduleData: {},
 });
 
 function randomSecret() {
@@ -44,10 +42,6 @@ socket.on("disconnect", () => {
   state.connected = false;
 });
 
-socket.on("updateWords", (words: string[]) => {
-  state.moduleData.words = words;
-});
-
 socket.on("updateUsers", (users: string[]) => {
   state.users = users;
 });
@@ -61,23 +55,6 @@ socket.on("restarting", () => {
     window.location.reload();
   }, 2000);
 });
-
-export function addWord(word: string, onSuccess: () => void) {
-  if (state.module !== "wordcloud") return;
-
-  socket.emit("addWord", word);
-
-  socket.on("actionSuccess", () => {
-    onSuccess();
-    socket.off("actionSuccess");
-  });
-}
-
-export function removeWord(word: string) {
-  if (state.module !== "wordcloud" || !state.isAdmin) return;
-
-  socket.emit("removeWord", word);
-}
 
 export function activateModule(module: string) {
   socket.emit("activateModule", module);

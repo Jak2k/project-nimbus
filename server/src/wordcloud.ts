@@ -29,7 +29,7 @@ const handleAction: actionHandler = (
   broadcast: (event: string, data: any) => void
 ) => {
   switch (action) {
-    case "addWord":
+    case "wordcloud.addWord":
       if (isWordAlreadyAdded(data[0])) {
         const i = words.findIndex((w) => w.word === data[0]);
         if (user.isAdmin && words[i].removed) words[i].removed = false;
@@ -41,13 +41,13 @@ const handleAction: actionHandler = (
           removed: false,
         });
       }
-      broadcast("updateWords", getWords());
+      broadcast("wordcloud.updateWords", getWords());
       return true;
-    case "removeWord":
+    case "wordcloud.removeWord":
       if (!user.isAdmin) return false;
       const i = words.findIndex((w) => w.word === data[0]);
       words[i].removed = true;
-      broadcast("updateWords", getWords());
+      broadcast("wordcloud.updateWords", getWords());
       return true;
     default:
       return false;
@@ -55,12 +55,12 @@ const handleAction: actionHandler = (
 };
 
 const handleJoin: joinHandler = (socket: Socket) => {
-  socket.emit("updateWords", getWords());
+  socket.emit("wordcloud.updateWords", getWords());
 };
 
 const init = (broadcast: (event: string, data: any) => void) => {
   words = [];
-  broadcast("updateWords", getWords());
+  broadcast("wordcloud.updateWords", getWords());
 };
 
 const handleDownload = (req: any, res: any) => {

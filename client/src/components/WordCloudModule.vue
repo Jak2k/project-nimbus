@@ -1,14 +1,35 @@
 <script setup lang="ts">
 // @ts-ignore
 import Vue3WordCloud from "vue3-word-cloud";
-defineProps<{
-  words: { word: string, count: number }[];
+import { type Socket } from "socket.io-client";
+
+const { socket, isAdmin } = defineProps<{
   isAdmin: boolean;
-  addWord: (word: string, onSucces: () => void) => void;
-  removeWord: (word: string) => void;
+  socket: Socket;
 }>();
 
+function addWord(word: string, onSuccess: () => void) {
+  socket.emit("wordcloud.addWord", word);
+
+  socket.on("actionSuccess", () => {
+    onSuccess();
+    socket.off("actionSuccess");
+  });
+}
+
+function removeWord(word: string) {
+  if (!isAdmin) return;
+
+  socket.emit("wordcloud.removeWord", word);
+}
+
 const word = ref("");
+
+const words = ref<{ word: string; count: number }[]>([]);
+
+socket.on("wordcloud.updateWords", (newWords: {word: string, count: number}[]) => {
+  words.value = newWords;
+});
 
 const { width, height } = useWindowSize();
 
@@ -17,7 +38,7 @@ const { t } = useI18n();
 
 <template>
   <div>
-    <h2 text-2xl>Words</h2>
+    <h2 text-2xl>{{ t("module.wordcloud.words") }}</h2>
     <p>{{ isAdmin ? t('module.wordcloud.clickToRemove') : t('module.wordcloud.clickToSubmit') }}</p>
     <div v-if="isAdmin">
       <span v-for="item in words" :key="item.word" @click="removeWord(item.word || '')">

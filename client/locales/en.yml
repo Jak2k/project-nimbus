@@ -27,4 +27,5 @@ module:
       input below. Click on a word in the cloud to make it larger.
     clickToSubmit: Click on a word in the cloud to make it larger.
     name: Wordcloud
+    words: Words
 not-found: Not Found

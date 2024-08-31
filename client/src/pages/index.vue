@@ -4,8 +4,6 @@ import {
   socket,
   state,
   URL,
-  addWord,
-  removeWord,
   activateModule,
   secret,
   restart,
@@ -56,10 +54,8 @@ async function submitPin(pin: String, name: String) {
 
     <WordCloudModule
       v-if="state.module === 'wordcloud'"
-      :words="state.moduleData.words || []"
       :isAdmin="state.isAdmin"
-      :addWord="addWord"
-      :removeWord="removeWord"
+      :socket="socket"
     />
   </div>
 
