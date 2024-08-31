@@ -9,20 +9,23 @@ Real-Time Collaboration Tool for Classrooms
 ## Features
 
 - [x] Real-Time Collaboration
-- [ ] Moderation
-  - [x] Removing unwanted content
-  - [x] Removing permanently
-  - [ ] Kicking Users & Disallow new ones
-- [x] Self-Hosted locally
+- [x] Self-Hostable locally (Linux, Android)
 - Modules
   - [x] Wordcloud
+  - [ ] Categoization voting
   - [ ] Vote
   - [ ] Quiz
   - [ ] Mindmap
+- [x] Download as text
+- [ ] Persistent data
+- [ ] Multi-Room support
+
 
 ## Getting Started
 
-> **Only run this in local networks! Never run this open to the internet.**
+> **Only run this in local networks! Never run this open to the internet, unless you are using a reverse-proxy like caddy.**
+
+This is how to **run the server**. To use it, you only need a browser.
 
 ### Termux on android
 
@@ -57,6 +60,15 @@ Tutorial will be enhanced later...
 1. In termux, run `cd Project-Nimbus` if you are not already in the folder
 2. Run `sh ./scripts/update.sh`
 
-### Linux / Windows
+### Linux
 
-Tutorial will be added later...
+1. Clone the repo `git clone https://github.com/Jak2k/Project-Nimbus.git`
+2. Install nodejs (if you haven't already) and pnpm `npm i -g pnpm`
+3. Enter the folder `cd Project-Nimbus`
+4. Install dependencies `pnpm i`
+5. Build the project `pnpm build`
+6. Start the server `pnpm start`
+
+### Windows
+
+Windows is not supported and will not be supported in the future. Use a proper operating system on your server. If you want to run it on your local machine, you can use WSL, but there are no guarantees that it will work.
