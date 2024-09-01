@@ -38,7 +38,7 @@ const { t } = useI18n();
                 src="../assets/Wordcloud_Image.optimized.svg"
                 h-100px
                 w-100px
-                alt="Wordcloud"
+                alt=""
               />
               {{ t("module.wordcloud.name") }}
             </button>

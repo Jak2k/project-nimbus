@@ -46,8 +46,7 @@ const { t } = useI18n();
       </span>
     </div>
     <form flex flex-row @submit="e => {e.preventDefault(); addWord(word, () => word = '')}">
-      <label for="word" sr-only>{{ t("module.wordcloud.addWord") }}</label>
-      <input v-model="word" type="text" inp />
+      <input v-model="word" type="text" :aria-label="t('module.wordcloud.addWord')" inp />
       <button @click="addWord(word, () => word = '')" bg-green btn>
         {{ t("module.wordcloud.addWord") }}
       </button>

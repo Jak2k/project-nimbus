@@ -63,7 +63,7 @@ async function submitPin(pin: String, name: String) {
 
   <footer text-center p-xl>
     <p>
-      Made as an <a href="https://github.com/jak2k/project-nimbus" target="_blank" underline text-blue>open-source project</a> by <a href="https://jak2k.schwanenberg.name" target="_blank" underline text-blue>Jak2k</a>.
+      Made as an <a href="https://github.com/jak2k/project-nimbus" target="_blank" underline text-blue-7 dark:text-blue-3>open-source project</a> by <a href="https://jak2k.schwanenberg.name" target="_blank" underline text-blue-7 dark:text-blue-3>Jak2k</a>.
     </p>
   </footer>
 </template>
