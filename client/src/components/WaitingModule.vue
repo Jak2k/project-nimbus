@@ -20,7 +20,7 @@ const { t } = useI18n();
       <div flex flex-col w-full flex-items-center h-full>
             <h2 text-2xl>{{ t("Users") }}</h2>
              <UserGrid :users="users" />
-            <button @click="quit" btn bg-red>
+            <button v-if="isAdmin" @click="quit" btn bg-red>
               {{ t("module.waiting.quit") }}
             </button>
         </div>
