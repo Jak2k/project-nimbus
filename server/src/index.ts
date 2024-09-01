@@ -131,7 +131,7 @@ io.on("connection", (socket) => {
       }
       callback({
         userType:
-          socket.handshake.auth.pin.toString().length === 6 ? "admin" : "user",
+          socket.handshake.auth.pin.toString() === ADMIN_PASSWORD ? "admin" : "user",
         sessionPin: SESSION_PIN,
       });
       io.emit("updateUsers", users);
