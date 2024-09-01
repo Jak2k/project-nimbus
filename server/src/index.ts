@@ -6,6 +6,7 @@ import path from "path";
 import process from "process";
 
 import wordcloud from "./wordcloud";
+import categorizer from "./categorizer";
 
 const app = express();
 const server = http.createServer(app);
@@ -83,6 +84,7 @@ knownModules.set("waiting", {
 });
 
 knownModules.set("wordcloud", wordcloud);
+knownModules.set("categorizer", categorizer);
 
 let activeModule: module = knownModules.get("waiting")!;
 

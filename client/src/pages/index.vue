@@ -57,6 +57,12 @@ async function submitPin(pin: String, name: String) {
       :isAdmin="state.isAdmin"
       :socket="socket"
     />
+
+    <CategorizerModule
+      v-if="state.module === 'categorizer'"
+      :isAdmin="state.isAdmin"
+      :socket="socket"
+    />
   </div>
 
   <LoginModule v-else :submitPin />

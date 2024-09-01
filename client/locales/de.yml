@@ -30,4 +30,8 @@ module:
     clickToSubmit: Klicke auf ein Wort in der Wolke, um es größer zu machen.
     name: Wörterwolke
     words: Wörter
+    continueInCategorizer: Mit diesen Wörtern im Kategorisierer fortfahren
+  categorizer:
+    name: Kategorisierer
+    addWord: Wort hinzufügen
 not-found: Nicht gefunden

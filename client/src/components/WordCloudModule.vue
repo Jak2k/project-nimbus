@@ -23,6 +23,16 @@ function removeWord(word: string) {
   socket.emit("wordcloud.removeWord", word);
 }
 
+function continueInCategorizer() {
+  socket.emit("activateModule", "categorizer");
+
+  setTimeout(() => {
+    words.value.forEach((word) => {
+      socket.emit("categorizer.addWord", word.word);
+    });
+  }, 100);
+}
+
 const word = ref("");
 
 const words = ref<{ word: string; count: number }[]>([]);
@@ -44,6 +54,10 @@ const { t } = useI18n();
       <span v-for="item in words" :key="item.word" @click="removeWord(item.word || '')">
         {{ item.word || "" }} ({{ item.count || 0 }})
       </span>
+
+      <button @click="continueInCategorizer" bg-red btn>
+        {{ t("module.wordcloud.continueInCategorizer") }}
+      </button>
     </div>
     <form flex flex-row @submit="e => {e.preventDefault(); addWord(word, () => word = '')}">
       <input v-model="word" type="text" :aria-label="t('module.wordcloud.addWord')" inp />

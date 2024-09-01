@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    CategorizerModule: typeof import('./components/CategorizerModule.vue')['default']
     HeaderBar: typeof import('./components/HeaderBar.vue')['default']
     LoginModule: typeof import('./components/LoginModule.vue')['default']
     QrCode: typeof import('./components/QrCode.vue')['default']

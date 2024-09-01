@@ -28,4 +28,8 @@ module:
     clickToSubmit: Click on a word in the cloud to make it larger.
     name: Wordcloud
     words: Words
+    continueInCategorizer: Continue with these words in Categorizer
+  categorizer:
+    name: Categorizer
+    addWord: Add Word
 not-found: Not Found
