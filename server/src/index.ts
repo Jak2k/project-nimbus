@@ -6,6 +6,7 @@ import path from "path";
 import process from "process";
 
 import wordcloud from "./wordcloud";
+import partnermatcher from "./partnermatcher";
 
 const app = express();
 const server = http.createServer(app);
@@ -54,12 +55,18 @@ export type actionHandler = (
   user: { isAdmin: boolean; name: string },
   broadcast: (event: string, data: any) => void
 ) => true | false | void;
-export type joinHandler = (socket: Socket) => void;
+export type joinHandler = (
+  socket: Socket,
+  broadcast: (event: string, data: any) => void
+) => void;
 export type module = {
   handleAction: actionHandler;
   handleJoin: joinHandler;
   id: string;
-  init: (broadcast: (event: string, data: any) => void) => void;
+  init: (
+    broadcast: (event: string, data: any) => void,
+    users: String[]
+  ) => void;
   handleDownload: (req: any, res: any) => void;
 };
 
@@ -72,7 +79,7 @@ knownModules.set("waiting", {
   ) => false,
   handleJoin: (socket: Socket) => {},
   id: "waiting",
-  init: (broadcast: (event: string, data: any) => void) => {},
+  init: (broadcast: (event: string, data: any) => void, users: String[]) => {},
   handleDownload: (req, res) => {
     let data = "";
     for (const user of users) {
@@ -83,6 +90,7 @@ knownModules.set("waiting", {
 });
 
 knownModules.set("wordcloud", wordcloud);
+knownModules.set("partnermatcher", partnermatcher);
 
 let activeModule: module = knownModules.get("waiting")!;
 
@@ -131,13 +139,15 @@ io.on("connection", (socket) => {
       }
       callback({
         userType:
-          socket.handshake.auth.pin.toString() === ADMIN_PASSWORD ? "admin" : "user",
+          socket.handshake.auth.pin.toString() === ADMIN_PASSWORD
+            ? "admin"
+            : "user",
         sessionPin: SESSION_PIN,
       });
       io.emit("updateUsers", users);
 
       socket.emit("updateModule", activeModule.id);
-      activeModule.handleJoin(socket);
+      activeModule.handleJoin(socket, broadcast);
     }
   );
 
@@ -150,7 +160,7 @@ io.on("connection", (socket) => {
 
     activeModule = knownModules.get(module)!;
     io.emit("updateModule", module);
-    activeModule.init(broadcast);
+    activeModule.init(broadcast, users);
   });
 
   socket.on("restart", () => {

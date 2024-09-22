@@ -29,6 +29,8 @@ async function submitPin(pin: String, name: String) {
   }
   serverPin.value = sessionPin;
 }
+
+const name = useLocalStorage("name", "");
 </script>
 
 <template>
@@ -56,6 +58,13 @@ async function submitPin(pin: String, name: String) {
       v-if="state.module === 'wordcloud'"
       :isAdmin="state.isAdmin"
       :socket="socket"
+    />
+
+    <PartnermatcherModule
+      v-if="state.module === 'partnermatcher'"
+      :is-admin="state.isAdmin"
+      :socket="socket"
+      :user="name"
     />
   </div>
 

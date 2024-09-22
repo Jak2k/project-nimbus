@@ -30,4 +30,13 @@ module:
     clickToSubmit: Klicke auf ein Wort in der Wolke, um es größer zu machen.
     name: Wörterwolke
     words: Wörter
+  partnermatcher:
+    alone: Einzelarbeit
+    done: Fertig mit Partnerarbeit
+    name: Partner Zuordnung
+    partner: Partner
+    partnered: Partnerarbeit
+    undo: Zurück
+    users: Nutzende
+    waiting: Warte auf Partner
 not-found: Nicht gefunden

@@ -54,11 +54,14 @@ const handleAction: actionHandler = (
   }
 };
 
-const handleJoin: joinHandler = (socket: Socket) => {
+const handleJoin: joinHandler = (socket: Socket, _broadcast: any) => {
   socket.emit("wordcloud.updateWords", getWords());
 };
 
-const init = (broadcast: (event: string, data: any) => void) => {
+const init = (
+  broadcast: (event: string, data: any) => void,
+  users: String[]
+) => {
   words = [];
   broadcast("wordcloud.updateWords", getWords());
 };

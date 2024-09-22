@@ -42,6 +42,15 @@ const { t } = useI18n();
               />
               {{ t("module.wordcloud.name") }}
             </button>
+            <button v-if="isAdmin" @click="activateModule('partnermatcher')" btn dark:text-white>
+              <!--img
+                src="../assets/Partnermatcher_Image.optimized.svg"
+                h-100px
+                w-100px
+                alt=""
+              /-->
+              {{ t("module.partnermatcher.name") }}
+            </button>
             <QrCode :url="URL" />
         </div>
     </div>
