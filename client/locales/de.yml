@@ -16,6 +16,7 @@ login:
     in einem Browser. Die PIN muss entweder die vierstellige Nutzenden-PIN oder
     die sechsstellige Administrations-PIN sein.
   pin: PIN
+  reconnect: Mit letzter PIN erneut verbinden
 module:
   waiting:
     adminMessage: Wählen Sie unten ein Modul aus

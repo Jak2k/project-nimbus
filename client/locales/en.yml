@@ -15,6 +15,7 @@ login:
     A name can only be used once and only on one device or browser. The PIN has
     to be either the 4 digit user PIN or the 6 digit admin PIN.
   pin: PIN
+  reconnect: Reconnect with last PIN
 module:
   waiting:
     adminMessage: Select a module below
