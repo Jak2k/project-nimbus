@@ -24,11 +24,12 @@ function generatePin(length: number) {
 
 type Config = {
   adminPassword?: string;
+  port?: number;
 };
 
 // read config as json from args
 const args = process.argv.slice(2);
-let config: Config = { adminPassword: undefined };
+let config: Config = { adminPassword: undefined, port: undefined };
 if (args.length > 0) {
   try {
     config = JSON.parse(args[0]);
@@ -44,6 +45,7 @@ if (args.length > 0) {
 const SESSION_PIN = generatePin(4);
 const ADMIN_PASSWORD = config.adminPassword || generatePin(6);
 const STATIC_DIR = path.resolve("../client/dist");
+const PORT = config.port || 3000;
 
 const knownModules: Map<string, module> = new Map();
 let users: String[] = [];
@@ -198,7 +200,7 @@ app.get("/download", (req, res) => {
   activeModule.handleDownload(req, res);
 });
 
-server.listen(3000, () => {
+server.listen(PORT, () => {
   // get current ip address in local network
   const ifaces = os.networkInterfaces();
   let ip = "";
@@ -211,7 +213,7 @@ server.listen(3000, () => {
     });
   });
 
-  console.log(`Open http://${ip}:3000/ to login`);
+  console.log(`Open http://${ip}:${PORT}/ to login`);
   console.log(`Session pin: ${SESSION_PIN}`);
   console.log(`Admin pin: ${ADMIN_PASSWORD}`);
 });

@@ -7,7 +7,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    copy: typeof import('./components/WordCloudModule copy.vue')['default']
     HeaderBar: typeof import('./components/HeaderBar.vue')['default']
     LoginModule: typeof import('./components/LoginModule.vue')['default']
     PartnermatcherModule: typeof import('./components/PartnermatcherModule.vue')['default']

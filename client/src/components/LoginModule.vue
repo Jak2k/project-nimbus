@@ -9,6 +9,18 @@ const name = useLocalStorage("name", "");
 
 const { t } = useI18n();
 
+// when the url has a query param pwd, set the pin to that value, remove the query param without reloading the page and submit the form
+onMounted(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const pwd = urlParams.get("pwd");
+  if (pwd) {
+    pin.value = pwd;
+    urlParams.delete("pwd");
+    window.history.replaceState({}, document.title, window.location.pathname);
+    submit();
+  }
+});
+
 function submit() {
   localStorage.setItem("lastPin", pin.value);
   submitPin(pin.value, name.value);
