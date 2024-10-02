@@ -5,6 +5,7 @@ COPY client /app/client
 COPY server /app/server
 COPY manager /app/manager
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /app/
+RUN npm install -g pnpm
 RUN pnpm install --frozen-lockfile
 
 COPY . .
