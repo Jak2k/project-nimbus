@@ -31,5 +31,6 @@ RUN pnpm install --frozen-lockfile
 
 WORKDIR /app
 CMD ["caddy", "run"]
+CMD ["sleep", "2"]
 WORKDIR /app/manager
 CMD ["pnpm", "start"]
