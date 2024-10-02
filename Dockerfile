@@ -21,7 +21,7 @@ COPY --from=build-stage /app/server /app/server
 COPY --from=build-stage /app/client/dist /app/client/dist
 COPY --from=build-stage /app/manager /app/manager
 COPY --from=build-stage /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/
-COPY Caddyfile /app/Caddyfile
+COPY Caddyfile startup.sh /app/
 
 WORKDIR /app/server
 RUN pnpm install --frozen-lockfile
@@ -30,7 +30,4 @@ WORKDIR /app/manager
 RUN pnpm install --frozen-lockfile
 
 WORKDIR /app
-CMD ["caddy", "run"]
-CMD ["sleep", "2"]
-WORKDIR /app/manager
-CMD ["pnpm", "start"]
+CMD ["bash", "startup.sh"]
