@@ -271,17 +271,7 @@ app.get("/delete/:name", async (req, res) => {
 
   if (!users.has(req.user as string)) {
     res.statusCode = 400;
-    res.end("Nothing to delete not found");
-    return;
-  }
-
-  const children = users.get(req.user as string)!;
-
-  children.get(name)?.stop();
-  children.delete(name);
-  res.redirect(302, "/");
-});
-
+    res.end("Nothing to delete not found");t
 app.get("/login", (req, res) => {
   res.end(LOGIN_PAGE);
 });
