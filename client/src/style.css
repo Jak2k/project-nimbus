@@ -1,0 +1,94 @@
+:root {
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+}
+
+main {
+  width: 100%;
+  margin: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+button,
+input,
+::file-selector-button {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid;
+  border-radius: 0rem;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid CanvasText;
+  font-family: monospace;
+}
+
+header :nth-child(2) {
+  font-family: sans-serif;
+}
+
+header :last-child {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+#module-selector {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+
+  & > li {
+    aspect-ratio: 1;
+    width: 5rem;
+
+    & button {
+      padding: 0;
+      border: 1px solid CanvasText;
+      background: none;
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+details {
+  margin: 1rem 0;
+  border: 1px solid;
+
+  padding: 0;
+  & > summary {
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+
+  &[open] > summary {
+    border-bottom: 1px solid;
+  }
+}
