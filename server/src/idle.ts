@@ -5,7 +5,7 @@ type Data = Record<string, never>;
 
 const handler: Handler<Data> = (_body, _data, _ctx, _send, _user) => {};
 const initialData: GetInitialData<Data> = (_users) => ({});
-const getInitialView: GetInitialView<Data> = (_data, user) => {
+const getInitialView: GetInitialView<Data> = (_data, user, session_code) => {
   if (!user.teacher)
     return `<h1>Idle</h1>
     <p>Waiting for the teacher to start a module...</p>`;
@@ -22,6 +22,7 @@ const getInitialView: GetInitialView<Data> = (_data, user) => {
         )
         .join("")}
     </ul>
+    <h2>Import a module</h2>
     <form id="module-import">
       <input type="file" name="module" />
       <button type="submit">Import</button>
@@ -52,7 +53,13 @@ const getInitialView: GetInitialView<Data> = (_data, user) => {
                 body: fileContent,
             });
         });
-    </script>`;
+    </script>
+    <h2>Magic Link</h2>
+    <p>Share this link with your students so they can join your session without manually entering the code:</p>
+    <code id="magic-link"></code>
+    <script>
+        document.querySelector("#magic-link").innerText = window.location.href + "?code=${session_code}";
+      </script>`;
 };
 export const idle: Module<Data> = {
   initialData,

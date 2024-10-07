@@ -27,7 +27,11 @@ export type Handler<Data> = (
   send: SendView,
   user: SessionUser
 ) => void;
-export type GetInitialView<Data> = (data: Data, user: SessionUser) => string;
+export type GetInitialView<Data> = (
+  data: Data,
+  user: SessionUser,
+  session_code: string
+) => string;
 export type GetInitialData<Data> = (users: SessionUser[]) => Data;
 
 export type Module<Data> = {

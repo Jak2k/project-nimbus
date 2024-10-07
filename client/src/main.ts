@@ -72,6 +72,16 @@ if (getCookie("token")) {
   teacher.checked = localStorage.getItem("teacher") === "true";
   password.hidden = !teacher.checked;
   passwordLabel.hidden = !teacher.checked;
+
+  // if a query parameter code is present, set the session code input value and remove the query parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get("code");
+  if (code) {
+    (form.querySelector("#session-code") as HTMLInputElement).value = code;
+    window.history.replaceState({}, document.title, window.location.pathname);
+    (form.querySelector("#session-code") as HTMLInputElement).value = code;
+  }
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const name = (form.querySelector("#name") as HTMLInputElement).value;

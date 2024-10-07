@@ -67,7 +67,8 @@ api.get("/sse", async (ctx) => {
       new ServerSentEvent("message", {
         data: `<div id="module" hx-swap-oob="true">${session.module.getInitialView(
           session.data,
-          user
+          user,
+          sessionCode
         )}</div>`,
       })
     );
@@ -142,7 +143,8 @@ api.post("/action", async (ctx) => {
             new ServerSentEvent("message", {
               data: `<div hx-swap-oob="true" id="module">${mod.getInitialView(
                 session.data,
-                user
+                user,
+                userSession
               )}</div>`,
             })
           );
@@ -260,7 +262,8 @@ api.post("/import", async (ctx) => {
         new ServerSentEvent("message", {
           data: `<div hx-swap-oob="true" id="module">${mod.getInitialView(
             session.data,
-            user
+            user,
+            userSession
           )}</div>`,
         })
       );

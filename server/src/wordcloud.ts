@@ -35,7 +35,7 @@ const initialData: GetInitialData<Data> = (_data) => ({
   words: [],
 });
 
-const getInitialView: GetInitialView<Data> = (data, _user) => {
+const getInitialView: GetInitialView<Data> = (data, _user, _session_code) => {
   return `<h1>Wordcloud</h1>
     <form id="wordcloud-form">
         <input type="text" name="text" />
