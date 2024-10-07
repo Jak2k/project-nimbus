@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  webcomponent-qr-code:
+    specifier: ^1.2.0
+    version: 1.2.0
+
 devDependencies:
   typescript:
     specifier: ^5.5.3
@@ -411,6 +416,10 @@ packages:
       source-map-js: 1.2.1
     dev: true
 
+  /qrjs@0.2.0:
+    resolution: {integrity: sha512-6tOePfihDByEXDULYlT/FmV27m5rX6IehCeZ82LouBD5kzSNqNXuVog8m1KGuGNyQovVOb0nKOB2ybHRRRgKJw==}
+    dev: false
+
   /rollup@4.24.0:
     resolution: {integrity: sha512-DOmrlGSXNk1DM0ljiQA+i+o0rSLhtii1je5wgk60j49d1jHT5YYttBv1iWOnYSTG+fZZESUOSNiAl89SIet+Cg==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
@@ -485,3 +494,9 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
+
+  /webcomponent-qr-code@1.2.0:
+    resolution: {integrity: sha512-1qEJ70HpiO0GbPy9T6XCtHn+RyI3awtpU88BBPQkhefwuRKg408X6z7mJeQxBnKkFQSv3ZWwmlgMvIjIO3RGOg==}
+    dependencies:
+      qrjs: 0.2.0
+    dev: false

@@ -92,3 +92,8 @@ details {
     border-bottom: 1px solid;
   }
 }
+
+qr-code {
+  display: block;
+  margin: 1rem;
+}

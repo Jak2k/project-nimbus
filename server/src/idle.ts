@@ -57,9 +57,12 @@ const getInitialView: GetInitialView<Data> = (_data, user, session_code) => {
     <h2>Magic Link</h2>
     <p>Share this link with your students so they can join your session without manually entering the code:</p>
     <code id="magic-link"></code>
+    <qr-code margin="1" modulesize="8" />
     <script>
         document.querySelector("#magic-link").innerText = window.location.href + "?code=${session_code}";
-      </script>`;
+        // set data attribute for qr-code element
+        document.querySelector("qr-code").setAttribute("data", window.location.href + "?code=${session_code}");
+    </script>`;
 };
 export const idle: Module<Data> = {
   initialData,

@@ -1,4 +1,5 @@
 import "./style.css";
+import "webcomponent-qr-code";
 
 const live = `<main hx-ext="sse" sse-connect="/api/sse" sse-swap="message" hx-swap="none">
     <p id="main">Loading...</p>
