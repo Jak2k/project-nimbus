@@ -36,7 +36,7 @@ const login = `<form>
 
 const main = document.querySelector("main")!;
 
-function getCookie(cname) {
+function getCookie(cname: string) {
   let name = cname + "=";
   let decodedCookie = decodeURIComponent(document.cookie);
   let ca = decodedCookie.split(";");
@@ -91,6 +91,8 @@ if (getCookie("token")) {
     });
     if (response.ok) {
       main.outerHTML = live;
+
+      // @ts-expect-error Htmx is loaded globally
       window.htmx.process(document.querySelector("main")!);
     } else {
       alert(await response.text());

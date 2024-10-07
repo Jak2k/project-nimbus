@@ -1,4 +1,4 @@
-import { Application, Context, Next, Router } from "@oak/oak";
+import { Application, Context, Next, Router, send } from "@oak/oak";
 import { ServerSentEvent, ServerSentEventTarget } from "@oak/oak";
 import * as UI from "./ui.ts";
 import { Module, SessionUser, Sessions, Users } from "./shared.ts";
@@ -337,13 +337,12 @@ app.use(async (ctx: Context, next: Next) => {
 app.use(api.routes());
 app.use(api.allowedMethods());
 
-app.use((ctx) => {
+app.use(async (ctx) => {
   if (ctx.response.status === 404) {
-    ctx.response.type = "text/html";
-    ctx.response.status = 404;
-    ctx.response.body = `<h1>404 - Not Found</h1>
-<p>This page could not be found on this server.</p>
-<p>If you are the administrator of this server, pleae make sure that the webserver not only reverse proxies the request to the application server but also serves the client-side application.</p>`;
+    await send(ctx, ctx.request.url.pathname, {
+      root: `../client/dist`,
+      index: "index.html",
+    });
   }
 });
 
