@@ -17,8 +17,12 @@ export type Session<Data> = {
 export type Sessions = Map<string, Session<any>>; // session code -> session
 
 // *** MODULES ***
-
-export type SendView = (view: string) => void;
+export type SendConfig = {
+  onlyTeacher: boolean;
+  onlyStudent: boolean;
+  onlyWithNames: string[];
+};
+export type SendView = (view: string, conf: SendConfig) => void;
 export type Handler<Data> = (
   // deno-lint-ignore no-explicit-any
   body: any,
@@ -30,7 +34,8 @@ export type Handler<Data> = (
 export type GetInitialView<Data> = (
   data: Data,
   user: SessionUser,
-  session_code: string
+  session_code: string,
+  send: SendView
 ) => string;
 export type GetInitialData<Data> = (users: SessionUser[]) => Data;
 

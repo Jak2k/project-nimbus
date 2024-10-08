@@ -1,9 +1,18 @@
-import { Application, Context, Next, Router, send } from "@oak/oak";
+import { Application, Context, Next, Router } from "@oak/oak";
+import { send as oakSend } from "@oak/oak";
 import { ServerSentEvent, ServerSentEventTarget } from "@oak/oak";
 import * as UI from "./ui.ts";
-import { Module, SessionUser, Sessions, Users } from "./shared.ts";
+import {
+  Module,
+  SendView,
+  Session,
+  SessionUser,
+  Sessions,
+  Users,
+} from "./shared.ts";
 import { idle } from "./idle.ts";
 import { wordcloud } from "./wordcloud.ts";
+import { partnermatcher } from "./partnermatcher.ts";
 
 const api = new Router({
   prefix: "/api",
@@ -13,12 +22,35 @@ api.get("/", (ctx) => {
   ctx.response.body = "The API is working and ready to serve requests.";
 });
 
+function makeSend(session: Session<any>): SendView {
+  return (view, conf) => {
+    session.users.forEach((user) => {
+      if (
+        (conf.onlyTeacher && !user.teacher) ||
+        (conf.onlyStudent && user.teacher) ||
+        (conf.onlyWithNames &&
+          conf.onlyWithNames.length > 0 &&
+          !conf.onlyWithNames.includes(user.name))
+      )
+        return;
+      user.sses.forEach((sse) => {
+        sse.dispatchEvent(
+          new ServerSentEvent("message", {
+            data: view,
+          })
+        );
+      });
+    });
+  };
+}
+
 export const availableModules = new Map<string, Module<any>>();
 function registerModule<Data>(module: Module<Data>) {
   availableModules.set(module.name, module);
 }
 registerModule(idle);
 registerModule(wordcloud);
+registerModule(partnermatcher);
 
 const users: Users = new Map<string, string>();
 const sessions: Sessions = new Map();
@@ -63,12 +95,14 @@ api.get("/sse", async (ctx) => {
         data: UI.NEWLY_JOINED(sessionCode, user, session),
       })
     );
+
     sse.dispatchEvent(
       new ServerSentEvent("message", {
         data: `<div id="module" hx-swap-oob="true">${session.module.getInitialView(
           session.data,
           user,
-          sessionCode
+          sessionCode,
+          makeSend(session)
         )}</div>`,
       })
     );
@@ -144,7 +178,8 @@ api.post("/action", async (ctx) => {
               data: `<div hx-swap-oob="true" id="module">${mod.getInitialView(
                 session.data,
                 user,
-                userSession
+                userSession,
+                makeSend(session)
               )}</div>`,
             })
           );
@@ -154,23 +189,7 @@ api.post("/action", async (ctx) => {
   }
 
   console.log(`User ${user.name} sent an action: ${json.action}`);
-  module.handler(
-    json,
-    session.data,
-    ctx,
-    (view) => {
-      session.users.forEach((user) => {
-        user.sses.forEach((sse) => {
-          sse.dispatchEvent(
-            new ServerSentEvent("message", {
-              data: view,
-            })
-          );
-        });
-      });
-    },
-    user
-  );
+  module.handler(json, session.data, ctx, makeSend(session), user);
 
   ctx.response.body = "Action sent";
   ctx.response.status = 200;
@@ -256,20 +275,6 @@ api.post("/import", async (ctx) => {
   session.module = mod;
   session.data = json.data;
 
-  session.users.forEach((user) => {
-    user.sses.forEach((sse) => {
-      sse.dispatchEvent(
-        new ServerSentEvent("message", {
-          data: `<div hx-swap-oob="true" id="module">${mod.getInitialView(
-            session.data,
-            user,
-            userSession
-          )}</div>`,
-        })
-      );
-    });
-  });
-
   ctx.response.body = "Module imported";
   ctx.response.status = 200;
 });
@@ -342,7 +347,7 @@ app.use(api.allowedMethods());
 
 app.use(async (ctx) => {
   if (ctx.response.status === 404) {
-    await send(ctx, ctx.request.url.pathname, {
+    await oakSend(ctx, ctx.request.url.pathname, {
       root: `../client/dist`,
       index: "index.html",
     });
