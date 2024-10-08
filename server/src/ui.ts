@@ -32,7 +32,7 @@ const HEADER = (
   const exportButton = user.teacher
     ? `<a target="_blank" href="/api/export" download>Export</a>`
     : "";
-  return `<header><span>${user.name}</span>${logo}<span><span>${sessionCode}</span>${exportButton}<span></header>`;
+  return `<header><span>${user.name}</span>${logo}<span><button popovertarget="user-list">Users</button><span>${sessionCode}</span>${exportButton}<span></header>`;
 };
 
 export const NEWLY_JOINED = (
@@ -41,12 +41,12 @@ export const NEWLY_JOINED = (
   session: { users: Map<string, { name: string; teacher: boolean }> }
 ) => `<div id="main" hx-swap-oob="true">
 ${HEADER(sessionCode, user)}
-<details>
-  <summary>Users</summary> 
+<div popover id="user-list">
+  <h2>Users</h2> 
   <ul id="users">
     ${USER_LIST(session.users)}
   </ul>
-</details>
+</div>
 <div id="module"></div>
 </div>`;
 

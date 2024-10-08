@@ -275,6 +275,21 @@ api.post("/import", async (ctx) => {
   session.module = mod;
   session.data = json.data;
 
+  session.users.forEach((user) => {
+    user.sses.forEach((sse) => {
+      sse.dispatchEvent(
+        new ServerSentEvent("message", {
+          data: `<div hx-swap-oob="true" id="module">${mod.getInitialView(
+            session.data,
+            user,
+            userSession,
+            makeSend(session)
+          )}</div>`,
+        })
+      );
+    });
+  });
+
   ctx.response.body = "Module imported";
   ctx.response.status = 200;
 });

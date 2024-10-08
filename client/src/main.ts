@@ -23,6 +23,11 @@ const login = `<form>
             grid-template-columns: 1fr 1fr;
             margin: 1rem auto;
             max-width: 25rem;
+            padding: 1rem;
+        }
+
+        form > input[type="text"], form > input[type="password"] {
+            border-bottom: 1px solid var(--brutal-accent);
         }
 
         h1, label[for=teacher], button[type=submit] {
@@ -55,7 +60,7 @@ function getCookie(cname: string) {
 
 // check for `token` cookie
 if (getCookie("token")) {
-  main.innerHTML = live;
+  main.outerHTML = live;
 } else {
   main.innerHTML = login;
 

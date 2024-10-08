@@ -24,8 +24,7 @@ const getInitialView: GetInitialView<Data> = (_data, user, session_code) => {
     </ul>
     <h2>Import a module</h2>
     <form id="module-import">
-      <input type="file" name="module" />
-      <button type="submit">Import</button>
+      <input type="file" name="module" id="importfile" />
     </form>
     <script>
         document.querySelectorAll("#module-selector button").forEach((button) => {
@@ -42,9 +41,8 @@ const getInitialView: GetInitialView<Data> = (_data, user, session_code) => {
                 });
             });
         });
-        document.getElementById("module-import").addEventListener("submit", (event) => {
-            event.preventDefault();
-            const fileContent = new FormData(event.target).get("module");
+        document.querySelector("#importfile").addEventListener("input", (event) => {
+            const fileContent = event.target.files?.[0];
             if (!fileContent) {
                 alert("No file selected!");
             }
