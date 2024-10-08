@@ -27,7 +27,11 @@ const handler: Handler<Data> = (body, data, ctx, send, user) => {
     } else {
       data.words.push({ text, users: [user.name] });
     }
-    send(`<ul id="words" hx-swap-oob="true">${WORDCLOUD(data.words)}</ul>`);
+    send(`<ul id="words" hx-swap-oob="true">${WORDCLOUD(data.words)}</ul>`, {
+      onlyStudent: false,
+      onlyTeacher: false,
+      onlyWithNames: [],
+    });
   }
 };
 
