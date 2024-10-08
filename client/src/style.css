@@ -11,7 +11,7 @@
 
   --brutal-accent: hsl(120, 99%, 45%);
   --brutal-shadow-color: hsla(120, 99%, 45%, 0.2);
-  --brutal-shadow: 0.3rem 0.3rem var(--brutal-shadow-color);
+  --brutal-shadow: 0.4rem 0.4rem var(--brutal-shadow-color);
   --brutal-shadow-hover: 0.2rem 0.2rem var(--brutal-shadow-color);
   --bg: hsl(54, 20%, 98%);
   --bg-hover: hsl(120, 50%, 95%);
@@ -185,7 +185,7 @@ qr-code::part(img) {
   margin-left: auto;
   position: fixed;
   top: 3.5rem;
-  right: 0.5rem;
+  right: 1rem;
   border: 1px solid var(--brutal-accent);
   box-shadow: var(--brutal-shadow);
 
