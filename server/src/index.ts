@@ -335,7 +335,10 @@ api.post("/login", async (ctx) => {
   });
   users.set(token, sessionCode);
   session.users.set(token, {
-    name,
+    name: name
+      .trim()
+      .replace(/ /g, "_")
+      .replace(/[^a-zA-Z0-9_äüöß/-ÄÜÖ]/g, ""),
     teacher,
     sses: [],
   });
@@ -369,5 +372,5 @@ app.use(async (ctx) => {
   }
 });
 
-app.listen({ port: 3000 });
-console.log("Server running on http://localhost:3000");
+app.listen({ port: 3069 });
+console.log("Server running on http://localhost:3069");

@@ -15,7 +15,7 @@ const WORDCLOUD = (words: Word[]) =>
 
 const handler: Handler<Data> = (body, data, ctx, send, user) => {
   if (body.action === "wordcloud.add") {
-    const text = body.text;
+    const text = body.text.trim().replace(/[^a-zA-Z0-9ÄÖÖßäüö\-_ ]/g, "");
     if (!text) {
       return;
     }
