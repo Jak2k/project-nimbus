@@ -14,7 +14,8 @@ const login = `<form>
     <label for="teacher"><input type="checkbox" id="teacher" name="teacher" /> Teacher</label>
     
     <label for="password">Password</label>
-    <input type="password" id="password" name="password" hidden />
+    <input type="password" id="password" name="password" />
+    <button type="button" id="generate-session-code">Generate Session Code</button>
     <button type="submit">Login</button>
     <style>
         form {
@@ -30,7 +31,7 @@ const login = `<form>
             border-bottom: 1px solid var(--brutal-accent);
         }
 
-        h1, label[for=teacher], button[type=submit] {
+        h1, label[for=teacher], button[type=submit], #generate-session-code {
             grid-column: span 2;
         }
 
@@ -67,6 +68,7 @@ if (getCookie("token")) {
   const form = main.querySelector("form")!;
   const teacher = form.querySelector("#teacher") as HTMLInputElement;
   const password = form.querySelector("#password") as HTMLInputElement;
+  const generateSessionCode = form.querySelector("#generate-session-code")!;
   const passwordLabel = form.querySelector(
     "label[for=password]"
   ) as HTMLLabelElement;
@@ -74,10 +76,12 @@ if (getCookie("token")) {
     localStorage.setItem("teacher", teacher.checked.toString());
     password.hidden = !teacher.checked;
     passwordLabel.hidden = !teacher.checked;
+    generateSessionCode.hidden = !teacher.checked;
   });
   teacher.checked = localStorage.getItem("teacher") === "true";
   password.hidden = !teacher.checked;
   passwordLabel.hidden = !teacher.checked;
+  generateSessionCode.hidden = !teacher.checked;
 
   // if a query parameter code is present, set the session code input value and remove the query parameter
   const urlParams = new URLSearchParams(window.location.search);
@@ -87,6 +91,12 @@ if (getCookie("token")) {
     window.history.replaceState({}, document.title, window.location.pathname);
     (form.querySelector("#session-code") as HTMLInputElement).value = code;
   }
+
+  generateSessionCode.addEventListener("click", async () => {
+    const sessionCode = Math.floor(100000 + Math.random() * 900000);
+    (form.querySelector("#session-code") as HTMLInputElement).value =
+      sessionCode.toString();
+  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
