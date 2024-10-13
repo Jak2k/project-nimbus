@@ -1,5 +1,5 @@
 {
   "deno.enable": true,
-  "conventionalCommits.scopes": ["client"],
+  "conventionalCommits.scopes": ["client", "server"],
   "conventionalCommits.gitmoji": false
 }

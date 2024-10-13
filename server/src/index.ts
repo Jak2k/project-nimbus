@@ -13,6 +13,7 @@ import {
 import { idle } from "./idle.ts";
 import { wordcloud } from "./wordcloud.ts";
 import { partnermatcher } from "./partnermatcher.ts";
+import { getTeachers, validatePassword } from "./auth.ts";
 
 const api = new Router({
   prefix: "/api",
@@ -313,10 +314,24 @@ api.post("/login", async (ctx) => {
   }
 
   // TODO: Check password of teacher
-  if (!sessions.has(sessionCode) || (teacher && password !== "password")) {
+  if (!sessions.has(sessionCode)) {
     ctx.response.status = 401;
-    ctx.response.body = "Invalid session code or password";
+    ctx.response.body = "Invalid session code";
     return;
+  }
+
+  if (teacher) {
+    const teacherEntry = (await getTeachers()).find((t) => t.name === name);
+    if (!teacherEntry) {
+      ctx.response.status = 401;
+      ctx.response.body = "Teacher not found";
+      return;
+    }
+    if (!(await validatePassword(teacherEntry, password))) {
+      ctx.response.status = 401;
+      ctx.response.body = "Invalid password";
+      return;
+    }
   }
 
   const session = sessions.get(sessionCode)!;
