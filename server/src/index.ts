@@ -55,12 +55,6 @@ registerModule(partnermatcher);
 
 const users: Users = new Map<string, string>();
 const sessions: Sessions = new Map();
-// TODO: Remove dummy session
-sessions.set("1234", {
-  users: new Map(),
-  module: idle,
-  data: {},
-});
 
 api.get("/sse", async (ctx) => {
   ctx.response.type = "text/event-stream";
@@ -187,11 +181,34 @@ api.post("/action", async (ctx) => {
         });
       });
     }
+  } else if (json.action === "deleteSession") {
+    if (user.name !== session.owner) {
+      ctx.response.status = 403;
+      ctx.response.body = "Forbidden";
+      return;
+    } else {
+      session.users.forEach((user) => {
+        user.sses.forEach((sse) => {
+          sse.dispatchEvent(
+            new ServerSentEvent("message", {
+              data: UI.USER_NOT_FOUND_RELOAD(),
+            })
+          );
+        });
+      });
+
+      users.forEach((sessionCode, token) => {
+        if (sessionCode === userSession) {
+          users.delete(token);
+        }
+      });
+
+      sessions.delete(userSession);
+    }
+  } else {
+    console.log(`User ${user.name} sent an action: ${json.action}`);
+    module.handler(json, session.data, ctx, makeSend(session), user);
   }
-
-  console.log(`User ${user.name} sent an action: ${json.action}`);
-  module.handler(json, session.data, ctx, makeSend(session), user);
-
   ctx.response.body = "Action sent";
   ctx.response.status = 200;
 });
@@ -313,13 +330,6 @@ api.post("/login", async (ctx) => {
     return;
   }
 
-  // TODO: Check password of teacher
-  if (!sessions.has(sessionCode)) {
-    ctx.response.status = 401;
-    ctx.response.body = "Invalid session code";
-    return;
-  }
-
   if (teacher) {
     const teacherEntry = (await getTeachers()).find((t) => t.name === name);
     if (!teacherEntry) {
@@ -332,10 +342,30 @@ api.post("/login", async (ctx) => {
       ctx.response.body = "Invalid password";
       return;
     }
+
+    if (!sessions.has(sessionCode)) {
+      sessions.set(sessionCode, {
+        users: new Map(),
+        module: idle,
+        data: {},
+        owner: name,
+      });
+    }
+    const session = sessions.get(sessionCode)!;
+
+    if (name !== session.owner) {
+      ctx.response.status = 401;
+      ctx.response.body =
+        "You are not the owner of this session. Please join as a student.";
+      return;
+    }
   }
-
+  if (!sessions.has(sessionCode)) {
+    ctx.response.status = 401;
+    ctx.response.body = "Invalid session code";
+    return;
+  }
   const session = sessions.get(sessionCode)!;
-
   const existingNames = Array.from(session.users.values());
   if (existingNames.some((user) => user.name === name)) {
     ctx.response.status = 401;

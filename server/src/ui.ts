@@ -32,7 +32,25 @@ const HEADER = (
   const exportButton = user.teacher
     ? `<a target="_blank" href="/api/export" download>Export</a>`
     : "";
-  return `<header><span>${user.name}</span>${logo}<span><button popovertarget="user-list">Users</button><span>${sessionCode}</span>${exportButton}<span></header>`;
+  const deleteButton = user.teacher
+    ? `<button id="delete">Delete</button>
+    <script>
+        document.getElementById("delete").addEventListener("click", () => {
+            // confirm alert
+            if (!confirm("Are you sure you want to delete this session & all it's data?")) return;
+            fetch("/api/action", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    action: "deleteSession",
+                }),
+            });
+        });
+    </script>`
+    : ``;
+  return `<header><span>${user.name}</span>${logo}<span><button popovertarget="user-list">Users</button><span>${sessionCode}</span>${exportButton}${deleteButton}<span></header>`;
 };
 
 export const NEWLY_JOINED = (

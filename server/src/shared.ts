@@ -12,6 +12,7 @@ export type Session<Data> = {
   users: Map<string, SessionUser>;
   module: Module<Data>;
   data: Data;
+  owner: string;
 };
 // deno-lint-ignore no-explicit-any
 export type Sessions = Map<string, Session<any>>; // session code -> session
