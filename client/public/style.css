@@ -46,7 +46,6 @@
 body {
   margin: 0;
   padding: 0;
-  display: flex;
   min-height: 100vh;
 }
 
@@ -77,6 +76,7 @@ input,
   border: none;
   border-radius: 0rem;
   background: var(--bg);
+  font-size: 1em;
 }
 
 button:hover,
@@ -93,7 +93,7 @@ input[type="file"] {
   padding: 0;
 }
 
-header {
+#header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -111,14 +111,14 @@ header {
   }
 }
 
-header > :nth-child(2) {
+#header > :nth-child(2) {
   font-family: sans-serif;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
 
-header :last-child {
+#header :last-child {
   display: flex;
   gap: 0.5rem;
   flex-direction: row;

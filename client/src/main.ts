@@ -1,4 +1,3 @@
-import "./style.css";
 import "webcomponent-qr-code";
 
 const live = `<main hx-ext="sse" sse-connect="/api/sse" sse-swap="message" hx-swap="none">
@@ -68,7 +67,9 @@ if (getCookie("token")) {
   const form = main.querySelector("form")!;
   const teacher = form.querySelector("#teacher") as HTMLInputElement;
   const password = form.querySelector("#password") as HTMLInputElement;
-  const generateSessionCode = form.querySelector("#generate-session-code")!;
+  const generateSessionCode = form.querySelector(
+    "#generate-session-code"
+  ) as HTMLButtonElement;
   const passwordLabel = form.querySelector(
     "label[for=password]"
   ) as HTMLLabelElement;

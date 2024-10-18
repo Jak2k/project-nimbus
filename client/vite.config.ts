@@ -7,6 +7,10 @@ export default defineConfig({
         target: "http://localhost:3069",
         changeOrigin: true,
       },
+      "^/*": {
+        target: "http://localhost:3069",
+        changeOrigin: true,
+      },
     },
     host: true,
     strictPort: true,

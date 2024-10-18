@@ -50,7 +50,7 @@ const HEADER = (
         });
     </script>`
     : ``;
-  return `<header><span>${user.name}</span>${logo}<span><button popovertarget="user-list">Users</button><span>${sessionCode}</span>${exportButton}${deleteButton}<span></header>`;
+  return `<header id="header"><span>${user.name}</span>${logo}<span><button popovertarget="user-list">Users</button><span>${sessionCode}</span>${exportButton}${deleteButton}<span></header>`;
 };
 
 export const NEWLY_JOINED = (

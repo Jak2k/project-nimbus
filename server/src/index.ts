@@ -14,6 +14,7 @@ import { idle } from "./idle.ts";
 import { wordcloud } from "./wordcloud.ts";
 import { partnermatcher } from "./partnermatcher.ts";
 import { getTeachers, validatePassword } from "./auth.ts";
+import { dashboardRouter } from "./dashboard.ts";
 
 const api = new Router({
   prefix: "/api",
@@ -53,8 +54,9 @@ registerModule(idle);
 registerModule(wordcloud);
 registerModule(partnermatcher);
 
-const users: Users = new Map<string, string>();
-const sessions: Sessions = new Map();
+export const users: Users = new Map<string, string>();
+export const sessions: Sessions = new Map();
+export const teachers = new Map<string, string>(); // teacher token -> teacher name
 
 api.get("/sse", async (ctx) => {
   ctx.response.type = "text/event-stream";
@@ -406,6 +408,7 @@ app.use(async (ctx: Context, next: Next) => {
   await next();
 });
 app.use(api.routes());
+app.use(dashboardRouter.routes());
 app.use(api.allowedMethods());
 
 app.use(async (ctx) => {
