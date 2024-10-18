@@ -50,7 +50,15 @@ const HEADER = (
         });
     </script>`
     : ``;
-  return `<header id="header"><span>${user.name}</span>${logo}<span><button popovertarget="user-list">Users</button><span>${sessionCode}</span>${exportButton}${deleteButton}<span></header>`;
+
+  const logoutButton = `<button id="logout">Logout</button><script>
+      document.getElementById("logout").addEventListener("click", async () => {
+          await fetch("/api/logout");
+          window.location.reload();
+      });
+    </script>`;
+
+  return `<header id="header"><span>${user.name}</span>${logo}<span><button popovertarget="user-list">Users</button><span>${sessionCode}</span>${exportButton}${deleteButton}${logoutButton}<span></header>`;
 };
 
 export const NEWLY_JOINED = (

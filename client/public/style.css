@@ -68,6 +68,15 @@ form {
   }
 }
 
+form.login {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr;
+  margin: 1rem auto;
+  max-width: 25rem;
+  padding: 1rem;
+}
+
 button,
 input,
 ::file-selector-button {

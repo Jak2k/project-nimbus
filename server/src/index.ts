@@ -317,14 +317,10 @@ api.post("/import", async (ctx) => {
 api.post("/login", async (ctx) => {
   let name = "";
   let sessionCode = "";
-  let teacher = false;
-  let password = "";
   try {
     const body = await ctx.request.body.json();
     name = body.name;
     sessionCode = body.sessionCode;
-    teacher = body.teacher;
-    password = body.password;
   } catch (error) {
     console.error(error);
     ctx.response.status = 400;
@@ -332,36 +328,6 @@ api.post("/login", async (ctx) => {
     return;
   }
 
-  if (teacher) {
-    const teacherEntry = (await getTeachers()).find((t) => t.name === name);
-    if (!teacherEntry) {
-      ctx.response.status = 401;
-      ctx.response.body = "Teacher not found";
-      return;
-    }
-    if (!(await validatePassword(teacherEntry, password))) {
-      ctx.response.status = 401;
-      ctx.response.body = "Invalid password";
-      return;
-    }
-
-    if (!sessions.has(sessionCode)) {
-      sessions.set(sessionCode, {
-        users: new Map(),
-        module: idle,
-        data: {},
-        owner: name,
-      });
-    }
-    const session = sessions.get(sessionCode)!;
-
-    if (name !== session.owner) {
-      ctx.response.status = 401;
-      ctx.response.body =
-        "You are not the owner of this session. Please join as a student.";
-      return;
-    }
-  }
   if (!sessions.has(sessionCode)) {
     ctx.response.status = 401;
     ctx.response.body = "Invalid session code";
@@ -369,7 +335,11 @@ api.post("/login", async (ctx) => {
   }
   const session = sessions.get(sessionCode)!;
   const existingNames = Array.from(session.users.values());
-  if (existingNames.some((user) => user.name === name)) {
+  if (
+    existingNames.some((user) => user.name === name) ||
+    name.trim().length === 0 ||
+    (await getTeachers()).find((teacher) => teacher.name === name) !== undefined
+  ) {
     ctx.response.status = 401;
     ctx.response.body = "Name already taken";
     return;
@@ -386,7 +356,7 @@ api.post("/login", async (ctx) => {
       .trim()
       .replace(/ /g, "_")
       .replace(/[^a-zA-Z0-9_äüöß/-ÄÜÖ]/g, ""),
-    teacher,
+    teacher: false,
     sses: [],
   });
   session.users.forEach((user) => {
@@ -399,6 +369,11 @@ api.post("/login", async (ctx) => {
     });
   });
 
+  ctx.response.status = 200;
+});
+
+api.get("/logout", async (ctx) => {
+  ctx.cookies.delete("token");
   ctx.response.status = 200;
 });
 

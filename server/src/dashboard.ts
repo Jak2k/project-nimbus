@@ -28,6 +28,10 @@ const BASE = (content: string) => `<!DOCTYPE html>
         margin-left: 0.5rem;
       }
     }
+
+    .login button {
+      grid-column: span 2;
+    }
   </style>
 </head>
 <body>
@@ -202,15 +206,15 @@ dashboardRouter.get("/sessions/:code/join", async (ctx) => {
 });
 
 dashboardRouter.get("/login", (ctx) => {
-  ctx.response.body = BASE(`<form method="post">
+  ctx.response.body = BASE(`<form method="post" class="login">
   <label>
     Name
-    <input type="text" name="name">
   </label>
+  <input type="text" name="name">
   <label>
     Password
-    <input type="password" name="password">
   </label>
+  <input type="password" name="password">
   <button type="submit">Login</button>
 </form>`);
 });
