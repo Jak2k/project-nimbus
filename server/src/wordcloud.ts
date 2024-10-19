@@ -11,7 +11,9 @@ export type Data = {
 };
 
 const WORDCLOUD = (words: Word[]) =>
-  words.map((word) => `<li>${word.text} (${word.users.length})</li>`).join("");
+  words
+    .map((word) => `<li data-amount="${word.users.length}">${word.text}</li>`)
+    .join("");
 
 const handler: Handler<Data> = (body, data, ctx, send, user) => {
   if (body.action === "wordcloud.add") {
@@ -65,6 +67,8 @@ const getInitialView: GetInitialView<Data> = (data, _user, _session_code) => {
             });
         </script>
     </form>
+    <word-cloud>
+    </word-cloud>
     <ul id="words">
         ${WORDCLOUD(data.words)}
     </ul>

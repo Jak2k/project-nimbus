@@ -216,3 +216,15 @@ qr-code::part(img) {
   padding: 1rem;
   align-items: center;
 }
+
+word-cloud,
+canvas {
+  width: 100%;
+  height: auto;
+}
+
+#words {
+  height: 0;
+  width: 0;
+  overflow: hidden;
+}

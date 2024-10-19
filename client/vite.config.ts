@@ -7,7 +7,7 @@ export default defineConfig({
         target: "http://localhost:3069",
         changeOrigin: true,
       },
-      "^/*": {
+      "/dashboard": {
         target: "http://localhost:3069",
         changeOrigin: true,
       },

@@ -161,6 +161,9 @@ dashboardRouter.get("/sessions/:code/delete", async (ctx) => {
     return;
   }
 
+  for (const [token, session] of users) {
+    if (session === code) users.delete(token);
+  }
   sessions.delete(code);
   ctx.response.redirect("/dashboard");
 });

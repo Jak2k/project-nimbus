@@ -1,4 +1,7 @@
 import "webcomponent-qr-code";
+import { WordCloud } from "./wordcloud.ts";
+
+customElements.define("word-cloud", WordCloud);
 
 const live = `<main hx-ext="sse" sse-connect="/api/sse" sse-swap="message" hx-swap="none">
     <p id="main">Loading...</p>
