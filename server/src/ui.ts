@@ -51,10 +51,12 @@ const HEADER = (
     </script>`
     : ``;
 
+  const redirectRoute = user.teacher ? "/dashboard" : "/";
+
   const logoutButton = `<button id="logout">Logout</button><script>
       document.getElementById("logout").addEventListener("click", async () => {
           await fetch("/api/logout");
-          window.location.reload();
+          window.location.href = "${redirectRoute}";
       });
     </script>`;
 
