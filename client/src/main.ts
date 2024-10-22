@@ -93,3 +93,44 @@ if (getCookie("token")) {
     }
   });
 }
+
+// Add event listener for file input to handle PDF upload
+document.getElementById("pdf-upload")?.addEventListener("change", async (event) => {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    const formData = new FormData();
+    formData.append("pdf", input.files[0]);
+
+    const response = await fetch("/api/upload-pdf", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const pdfUrl = await response.text();
+      displayPDF(pdfUrl);
+    } else {
+      alert("Failed to upload PDF");
+    }
+  }
+});
+
+// Function to display the uploaded PDF to all users
+function displayPDF(pdfUrl: string) {
+  const pdfContainer = document.getElementById("pdf-container");
+  if (pdfContainer) {
+    pdfContainer.innerHTML = `<iframe src="${pdfUrl}" width="100%" height="600px"></iframe>`;
+  }
+}
+
+// Functionality for the teacher to select the currently displayed slide
+document.getElementById("pdf-container")?.addEventListener("click", (event) => {
+  const target = event.target as HTMLElement;
+  if (target.tagName === "IFRAME") {
+    const slideNumber = prompt("Enter slide number to display:");
+    if (slideNumber) {
+      const iframe = target as HTMLIFrameElement;
+      iframe.src = `${iframe.src}#page=${slideNumber}`;
+    }
+  }
+});
