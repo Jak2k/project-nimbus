@@ -16,6 +16,7 @@ import { partnermatcher } from "./partnermatcher.ts";
 import { getTeachers, validatePassword } from "./auth.ts";
 import { dashboardRouter } from "./dashboard.ts";
 import { ensureDir, writeFileStr } from "https://deno.land/std/fs/mod.ts";
+import { presentation } from "./presentation.ts";
 
 const api = new Router({
   prefix: "/api",
@@ -54,6 +55,7 @@ function registerModule<Data>(module: Module<Data>) {
 registerModule(idle);
 registerModule(wordcloud);
 registerModule(partnermatcher);
+registerModule(presentation);
 
 export const users: Users = new Map<string, string>();
 export const sessions: Sessions = new Map();
