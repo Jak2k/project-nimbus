@@ -1,115 +1,259 @@
-import { Socket } from "socket.io";
-import { actionHandler, joinHandler } from ".";
+import { match } from "npm:path-to-regexp@6.2.1";
+import { Handler, GetInitialView, GetInitialData } from "./shared.ts";
+import { Module } from "./shared.ts";
 
-let userData: {
+type Partner = {
   name: string;
   status: "alone" | "waiting" | "partnered" | "done";
   partner?: string;
-}[] = [];
+};
 
-const handleAction: actionHandler = (
-  action: string,
-  data: any,
-  user: {
-    isAdmin: boolean;
-    name: string;
-  },
-  broadcast: (event: string, data: any) => void
-) => {
-  switch (action) {
-    case "partnermatcher.doneAlone": {
-      const i = userData.findIndex((u) => u.name === user.name);
-      if (i === -1) return false;
-      userData[i].status = "waiting";
+export type Data = {
+  partners: Partner[];
+};
 
-      // search for another user that is waiting
-      const partnerI = userData.findIndex(
-        (u) => u.status === "waiting" && u.name !== user.name
+const PARTNER_LI = (partner: Partner, swap = false) => {
+  const html = `<li id="partner-${partner.name}" ${
+    swap ? 'hx-swap-oob="true"' : ""
+  }>${partner.name} (${partner.status}${
+    partner.partner !== undefined ? " with " + partner.partner : ""
+  })</li>`;
+  console.log(html);
+  return html;
+};
+
+const USER_BUTTONS = (partner: Partner) => {
+  let statusButton = "";
+  if (partner.status === "alone") {
+    statusButton = `<button id="doneAlone" class="partner-action">Done Alone</button>`;
+  } else if (partner.status === "waiting") {
+    statusButton = ``;
+  } else if (partner.status === "partnered") {
+    statusButton = `<button id="donePartnered" class="partner-action">Done Partnered</button>`;
+  } else if (partner.status === "done") {
+    statusButton = ``;
+  }
+  const undoButton =
+    partner.status === "waiting" || partner.status === "partnered"
+      ? `<button id="undo" class="partner-action">Undo</button>`
+      : "";
+
+  let script = `<script>
+    for (const button of document.getElementsByClassName("partner-action")) {
+      button.addEventListener("click", (e) => {
+        const action = e.target.id;
+        const body = { action: "partnermatcher." + action };
+        fetch("/api/action", {
+          method: "POST",
+          body: JSON.stringify(body),
+        });
+      });
+    }
+    </script>`;
+
+  return statusButton + undoButton + script;
+};
+
+const USER_DISPLAY = (partner: Partner, swap = false) =>
+  `<div id="partner_display" ${
+    swap ? 'hx-swap-oob="true"' : ""
+  }><p>You are <strong>${partner.status}</strong>` +
+  (partner.partner !== undefined
+    ? ` with <strong>${partner.partner}</strong>`
+    : "") +
+  "</p>" +
+  USER_BUTTONS(partner) +
+  "</div>";
+
+const handler: Handler<Data> = (body, data, ctx, send, user) => {
+  if (body.action === "partnermatcher.doneAlone") {
+    // send(`<ul id="words" hx-swap-oob="true">${WORDCLOUD(data.words)}</ul>`);
+    const userI = data.partners.findIndex(
+      (partner) => partner.name === user.name
+    );
+    if (userI === -1) {
+      return;
+    }
+    data.partners[userI].status = "waiting";
+
+    const waitingPartnerI = data.partners.findIndex(
+      (partner) => partner.name !== user.name && partner.status === "waiting"
+    );
+    if (waitingPartnerI === -1) {
+      send(PARTNER_LI(data.partners[userI], true), {
+        onlyTeacher: true,
+        onlyStudent: false,
+        onlyWithNames: [],
+      });
+      send(USER_DISPLAY(data.partners[userI], true), {
+        onlyTeacher: false,
+        onlyStudent: true,
+        onlyWithNames: [user.name],
+      });
+      return;
+    }
+
+    data.partners[userI].status = "partnered";
+    data.partners[waitingPartnerI].status = "partnered";
+    data.partners[userI].partner = data.partners[waitingPartnerI].name;
+    data.partners[waitingPartnerI].partner = data.partners[userI].name;
+
+    send(PARTNER_LI(data.partners[userI], true), {
+      onlyTeacher: true,
+      onlyStudent: false,
+      onlyWithNames: [],
+    });
+    send(PARTNER_LI(data.partners[waitingPartnerI], true), {
+      onlyTeacher: true,
+      onlyStudent: false,
+      onlyWithNames: [],
+    });
+    send(USER_DISPLAY(data.partners[userI], true), {
+      onlyTeacher: false,
+      onlyStudent: true,
+      onlyWithNames: [data.partners[userI].name],
+    });
+    send(USER_DISPLAY(data.partners[waitingPartnerI], true), {
+      onlyTeacher: false,
+      onlyStudent: true,
+      onlyWithNames: [data.partners[waitingPartnerI].name],
+    });
+  } else if (body.action === "partnermatcher.donePartnered") {
+    const userI = data.partners.findIndex(
+      (partner) => partner.name === user.name
+    );
+    if (userI === -1) {
+      return;
+    }
+    const partnerI = data.partners.findIndex(
+      (partner) => partner.name === data.partners[userI].partner
+    );
+    if (partnerI === -1) {
+      return;
+    }
+
+    data.partners[userI].status = "done";
+    data.partners[partnerI].status = "done";
+
+    send(PARTNER_LI(data.partners[userI], true), {
+      onlyTeacher: true,
+      onlyStudent: false,
+      onlyWithNames: [],
+    });
+    send(PARTNER_LI(data.partners[partnerI], true), {
+      onlyTeacher: true,
+      onlyStudent: false,
+      onlyWithNames: [],
+    });
+    send(USER_DISPLAY(data.partners[userI], true), {
+      onlyTeacher: false,
+      onlyStudent: true,
+      onlyWithNames: [data.partners[userI].name],
+    });
+    send(USER_DISPLAY(data.partners[partnerI], true), {
+      onlyTeacher: false,
+      onlyStudent: true,
+      onlyWithNames: [data.partners[partnerI].name],
+    });
+  } else if (body.action === "partnermatcher.undo") {
+    const userI = data.partners.findIndex(
+      (partner) => partner.name === user.name
+    );
+    if (userI === -1) {
+      return;
+    }
+
+    if (data.partners[userI].status === "partnered") {
+      const partnerI = data.partners.findIndex(
+        (partner) => partner.name === data.partners[userI].partner
       );
       if (partnerI === -1) {
-        // no partner found
-        broadcast("partnermatcher.updateUsers", userData);
-        return true;
+        return;
       }
+      data.partners[partnerI].status = "waiting";
+      data.partners[partnerI].partner = undefined;
+      data.partners[userI].partner = undefined;
+      data.partners[userI].status = "alone";
 
-      // partner found
-      userData[i].status = "partnered";
-      userData[partnerI].status = "partnered";
-      userData[i].partner = userData[partnerI].name;
-      userData[partnerI].partner = user.name;
-
-      broadcast("partnermatcher.updateUsers", userData);
-      return true;
+      send(PARTNER_LI(data.partners[partnerI], true), {
+        onlyTeacher: true,
+        onlyStudent: false,
+        onlyWithNames: [],
+      });
+      send(USER_DISPLAY(data.partners[partnerI], true), {
+        onlyTeacher: false,
+        onlyStudent: true,
+        onlyWithNames: [data.partners[partnerI].name],
+      });
+    } else if (data.partners[userI].status === "waiting") {
+      data.partners[userI].status = "alone";
     }
-    case "partnermatcher.donePartnered": {
-      const i = userData.findIndex((u) => u.name === user.name);
-      if (i === -1) return false;
-      userData[i].status = "done";
-      const partnerI = userData.findIndex(
-        (u) => u.name === userData[i].partner
-      );
-      if (partnerI === -1) return false;
-      userData[partnerI].status = "done";
-      broadcast("partnermatcher.updateUsers", userData);
-      return true;
-    }
-    case "partnermatcher.undo": {
-      const i = userData.findIndex((u) => u.name === user.name);
-      if (i === -1) return false;
-      userData[i].status = "alone";
-
-      if (userData[i].partner !== undefined) {
-        const partnerI = userData.findIndex(
-          (u) => u.name === userData[i].partner
-        );
-        if (partnerI === -1) return false;
-        userData[partnerI].status = "waiting";
-        userData[i].partner = undefined;
-        userData[partnerI].partner = undefined;
-      }
-      broadcast("partnermatcher.updateUsers", userData);
-      return true;
-    }
-    default:
-      return false;
+    send(PARTNER_LI(data.partners[userI], true), {
+      onlyTeacher: true,
+      onlyStudent: false,
+      onlyWithNames: [],
+    });
+    send(USER_DISPLAY(data.partners[userI], true), {
+      onlyTeacher: false,
+      onlyStudent: true,
+      onlyWithNames: [data.partners[userI].name],
+    });
   }
 };
 
-const handleJoin: joinHandler = (
-  socket: Socket,
-  broadcast: (even: string, data: any) => void
+const initialData: GetInitialData<Data> = (users) => ({
+  partners: users
+    .filter((user) => !user.teacher)
+    .map((user) => ({
+      name: user.name,
+      status: "alone",
+      partner: undefined,
+    })),
+});
+
+const getInitialView: GetInitialView<Data> = (
+  data,
+  user,
+  _session_code,
+  send
 ) => {
-  if (userData.some((u) => u.name === socket.handshake.auth.name)) {
-    socket.emit("partnermatcher.updateUsers", userData);
-    return;
+  if (
+    !data.partners.find((partner) => partner.name === user.name) &&
+    !user.teacher
+  ) {
+    data.partners.push({
+      name: user.name,
+      status: "alone",
+      partner: undefined,
+    });
+    send(
+      `<ul id="partners" hx-swap-oob="true">
+      ${data.partners.map((p) => PARTNER_LI(p, false)).join("")}
+    </ul>`,
+      {
+        onlyTeacher: true,
+        onlyStudent: false,
+        onlyWithNames: [],
+      }
+    );
   }
-
-  userData.push({
-    name: socket.handshake.auth.name,
-    status: "alone",
-  });
-  broadcast("partnermatcher.updateUsers", userData);
+  if (user.teacher) {
+    return `<h1>Partnerwork Matcher</h1>
+    <ul id="partners">
+      ${data.partners.map((p) => PARTNER_LI(p, false)).join("")}
+    </ul>
+  `;
+  } else {
+    return `<h1>Partnerwork Matcher</h1>
+    ${USER_DISPLAY(data.partners.find((p) => p.name === user.name)!, false)}
+    `;
+  }
 };
 
-const init = (
-  broadcast: (event: string, data: any) => void,
-  users: String[]
-) => {
-  userData = users.map((u) => ({
-    name: u as string,
-    status: "alone",
-  }));
-  broadcast("partnermatcher.updateUsers", userData);
-};
-
-const handleDownload = (req: any, res: any) => {
-  res.end(JSON.stringify(userData));
-};
-
-export default {
-  handleAction,
-  handleJoin,
-  init,
-  id: "partnermatcher",
-  handleDownload,
+export const partnermatcher: Module<Data> = {
+  initialData,
+  handler,
+  getInitialView,
+  name: "partnermatcher",
+  displayName: "Partnerwork Matcher",
 };

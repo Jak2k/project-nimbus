@@ -1,87 +1,84 @@
-import { Socket } from "socket.io";
-import { actionHandler, joinHandler } from ".";
+import { Handler, GetInitialView, GetInitialData } from "./shared.ts";
+import { Module } from "./shared.ts";
 
-let words: {
-  word: string;
+type Word = {
+  text: string;
   users: string[];
-  removed: boolean;
-}[] = [];
+};
 
-function isWordAlreadyAdded(word: string) {
-  return words.some((w) => w.word === word);
-}
+export type Data = {
+  words: Word[];
+};
 
-function getWords() {
-  return words
-    .filter((w) => !w.removed)
-    .map((w) => {
-      return { word: w.word, count: w.users.length };
-    });
-}
+const WORDCLOUD = (words: Word[]) =>
+  words
+    .map((word) => `<li data-amount="${word.users.length}">${word.text}</li>`)
+    .join("");
 
-const handleAction: actionHandler = (
-  action: string,
-  data: any,
-  user: {
-    isAdmin: boolean;
-    name: string;
-  },
-  broadcast: (event: string, data: any) => void
-) => {
-  switch (action) {
-    case "wordcloud.addWord":
-      if (isWordAlreadyAdded(data[0])) {
-        const i = words.findIndex((w) => w.word === data[0]);
-        if (user.isAdmin && words[i].removed) words[i].removed = false;
-        if (!words[i].users.includes(user.name)) words[i].users.push(user.name);
-      } else {
-        words.push({
-          word: data[0],
-          users: [user.name],
-          removed: false,
-        });
+const handler: Handler<Data> = (body, data, ctx, send, user) => {
+  if (body.action === "wordcloud.add") {
+    const text = body.text.trim().replace(/[^a-zA-Z0-9ÄÖÖßäüö\-_ ]/g, "");
+    if (!text) {
+      return;
+    }
+    const word = data.words.find((word) => word.text === text);
+    if (word) {
+      if (!word.users.includes(user.name)) {
+        word.users.push(user.name);
       }
-      broadcast("wordcloud.updateWords", getWords());
-      return true;
-    case "wordcloud.removeWord":
-      if (!user.isAdmin) return false;
-      const i = words.findIndex((w) => w.word === data[0]);
-      words[i].removed = true;
-      broadcast("wordcloud.updateWords", getWords());
-      return true;
-    default:
-      return false;
+    } else {
+      data.words.push({ text, users: [user.name] });
+    }
+    send(`<ul id="words" hx-swap-oob="true">${WORDCLOUD(data.words)}</ul>`, {
+      onlyStudent: false,
+      onlyTeacher: false,
+      onlyWithNames: [],
+    });
   }
 };
 
-const handleJoin: joinHandler = (socket: Socket, _broadcast: any) => {
-  socket.emit("wordcloud.updateWords", getWords());
+const initialData: GetInitialData<Data> = (_data) => ({
+  words: [],
+});
+
+const getInitialView: GetInitialView<Data> = (data, _user, _session_code) => {
+  return `<h1>Wordcloud</h1>
+    <form id="wordcloud-form">
+        <input type="text" name="text" />
+        <button type="submit">Add</button>
+        <script>
+            document.getElementById("wordcloud-form").addEventListener("submit", (event) => {
+                event.preventDefault();
+                const text = new FormData(event.target).get("text");
+                fetch("/api/action", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        action: "wordcloud.add",
+                        text,
+                    }),
+                }).then(() => {
+                    event.target.reset();
+                }).catch((error) => {
+                    console.error(error);
+                });
+            });
+        </script>
+    </form>
+    <word-cloud>
+    </word-cloud>
+    <ul id="words">
+        ${WORDCLOUD(data.words)}
+    </ul>
+  `;
 };
 
-const init = (
-  broadcast: (event: string, data: any) => void,
-  users: String[]
-) => {
-  words = [];
-  broadcast("wordcloud.updateWords", getWords());
-};
-
-const handleDownload = (req: any, res: any) => {
-  res.end(
-    getWords()
-      .sort((a: any, b: any) => {
-        if (a.count === b.count) return a.word.localeCompare(b.word);
-        b.count - a.count;
-      })
-      .map((w) => `${w.count} ${w.word}`)
-      .join("\n")
-  );
-};
-
-export default {
-  handleAction,
-  handleJoin,
-  init,
-  id: "wordcloud",
-  handleDownload,
+export const wordcloud: Module<Data> = {
+  initialData,
+  handler,
+  getInitialView,
+  name: "wordcloud",
+  displayName: "Wordcloud",
 };
