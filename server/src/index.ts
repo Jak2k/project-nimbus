@@ -338,7 +338,7 @@ api.post("/login", async (ctx) => {
   if (
     existingNames.some((user) => user.name === name) ||
     name.trim().length === 0 ||
-    (await getTeachers()).find((teacher) => teacher.name === name) !== undefined
+    (session.owner === name) !== undefined
   ) {
     ctx.response.status = 401;
     ctx.response.body = "Name already taken";
