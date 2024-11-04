@@ -15,6 +15,8 @@ import { wordcloud } from "./wordcloud.ts";
 import { partnermatcher } from "./partnermatcher.ts";
 import { getTeachers, validatePassword } from "./auth.ts";
 import { dashboardRouter } from "./dashboard.ts";
+import { ensureDir, writeFileStr } from "https://deno.land/std/fs/mod.ts";
+import { presentation } from "./presentation.ts";
 
 const api = new Router({
   prefix: "/api",
@@ -53,6 +55,7 @@ function registerModule<Data>(module: Module<Data>) {
 registerModule(idle);
 registerModule(wordcloud);
 registerModule(partnermatcher);
+registerModule(presentation);
 
 export const users: Users = new Map<string, string>();
 export const sessions: Sessions = new Map();
@@ -374,6 +377,60 @@ api.post("/login", async (ctx) => {
 
 api.get("/logout", async (ctx) => {
   ctx.cookies.delete("token");
+  ctx.response.status = 200;
+});
+
+// Add a new route for handling PDF uploads
+api.post("/upload-pdf", async (ctx) => {
+  const token = await ctx.cookies.get("token");
+  if (!token) {
+    ctx.response.status = 401;
+    ctx.response.body = "Authorization required";
+    return;
+  }
+
+  if (!users.has(token)) {
+    ctx.response.status = 401;
+    ctx.response.body = "User not found";
+    return;
+  }
+
+  const userSession = users.get(token)!;
+  const user = sessions.get(userSession)!.users.get(token)!;
+  const session = sessions.get(userSession)!;
+
+  if (!user.teacher) {
+    ctx.response.status = 403;
+    ctx.response.body = "Forbidden";
+    return;
+  }
+
+  const body = await ctx.request.body({ type: "form-data" });
+  const formData = await body.value.read();
+  const pdfFile = formData.files?.find((file) => file.name === "pdf");
+
+  if (!pdfFile) {
+    ctx.response.status = 400;
+    ctx.response.body = "No PDF file provided";
+    return;
+  }
+
+  const pdfDir = `./uploads/${userSession}`;
+  await ensureDir(pdfDir);
+  const pdfPath = `${pdfDir}/${pdfFile.filename}`;
+  await writeFileStr(pdfPath, await Deno.readTextFile(pdfFile.tempfile!));
+
+  session.users.forEach((user) => {
+    user.sses.forEach((sse) => {
+      sse.dispatchEvent(
+        new ServerSentEvent("message", {
+          data: `<div id="pdf-container" hx-swap-oob="true"><iframe src="${pdfPath}" width="100%" height="600px"></iframe></div>`,
+        })
+      );
+    });
+  });
+
+  ctx.response.body = pdfPath;
   ctx.response.status = 200;
 });
 
